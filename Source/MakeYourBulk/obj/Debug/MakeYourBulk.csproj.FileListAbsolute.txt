@@ -1,0 +1,4 @@
+C:\Dev\C#\Rimworld Modding\Make Your Bulk\Assemblies\MakeYourBulk.dll
+C:\Dev\C#\Rimworld Modding\Make Your Bulk\Source\MakeYourBulk\obj\Debug\MakeYourBulk.csproj.AssemblyReference.cache
+C:\Dev\C#\Rimworld Modding\Make Your Bulk\Source\MakeYourBulk\obj\Debug\MakeYourBulk.csproj.CoreCompileInputs.cache
+C:\Dev\C#\Rimworld Modding\Make Your Bulk\Source\MakeYourBulk\obj\Debug\MakeYourBulk.dll

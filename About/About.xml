@@ -1,0 +1,44 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ModMetaData>
+	<packageId>AlenDio.MakeYourBulk</packageId>
+	<name>Make Your Bulk</name>
+	<author>AlenDio</author>
+	<description>Tired of crafting items one by one? 
+This mod allows you to automatically make new Bulk recipes based on existing ones.
+
+&lt;color=orange&gt;&lt;b&gt;How to use&lt;/b&gt;&lt;/color&gt;
+Go to "Settings -> Mod Options -> Make Your Bulk".
+- Add Recipe: Select an existing recipe to create its bulk version.
+- Remove Recipe: Remove a previously created bulk recipe (Restart required).
+- Reset list: Clear every bulk recipes (Restart required).
+- Save/Load list: Allows to save and then load an already created list.
+
+&lt;color=orange&gt;&lt;b&gt;Features&lt;/b&gt;&lt;/color&gt;
+- BulkUnfinishedThing: Allow partially completed items to be stored and resumed later.
+- Same Quality: All the products of the recipe will have the same quality.
+- Products Multiplier: Set how many products will be produced.
+- Work Amount Multiplier: Set the percentage of the amount of work.
+- Cost Multiplier: Set the percentage of the cost of the ingredients.
+	</description>
+	<supportedVersions>
+		<li>1.5</li>
+	</supportedVersions>
+	<modVersion IgnoreIfNoMatchingField="True">2.0.0</modVersion>
+	<modDependencies>
+		<li>
+			<packageId>brrainz.harmony</packageId>
+			<displayName>Harmony</displayName>
+			<steamWorkshopUrl>steam://url/CommunityFilePage/2009463077</steamWorkshopUrl>
+		</li>
+	</modDependencies>
+	<loadAfter>
+		<li>Ludeon.RimWorld</li>
+		<li>Ludeon.RimWorld.Royalty</li>
+		<li>Ludeon.RimWorld.Biotech</li>
+		<li>Ludeon.RimWorld.Anomaly</li>
+	</loadAfter>
+	<loadBefore>
+		<li>sarg.alphaimplants</li>
+		<li>gwinnbleidd.researchtweaks</li>
+	</loadBefore>
+</ModMetaData>
