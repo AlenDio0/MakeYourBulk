@@ -23,7 +23,7 @@ Go to "Settings -> Mod Options -> Make Your Bulk".
 	<supportedVersions>
 		<li>1.5</li>
 	</supportedVersions>
-	<modVersion IgnoreIfNoMatchingField="True">2.0.0</modVersion>
+	<modVersion IgnoreIfNoMatchingField="True">2.1.0</modVersion>
 	<modDependencies>
 		<li>
 			<packageId>brrainz.harmony</packageId>

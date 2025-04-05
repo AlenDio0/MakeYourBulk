@@ -1,0 +1,9 @@
+## 2.1.0 (05-04-2025)
+
+ADDED: Changelog.txt and .gitignore
+FIXED: Reloading twice the bulk recipe into DefDatabase.
+FIXED: Typo in Harmony id.
+
+## 2.0.0 (04-04-2025)
+
+FIXED: Incompatibility with TBnRE.

@@ -44,10 +44,8 @@ namespace MakeYourBulk
     {
         static MakeYourBulk()
         {
-            Harmony harmony = new Harmony("com.alendio.makeyoubulk");
+            Harmony harmony = new Harmony("com.alendio.makeyourbulk");
             harmony.PatchAll();
-
-            MakeYourBulkMod.settings.AddToDatabase();
         }
     }
 }
