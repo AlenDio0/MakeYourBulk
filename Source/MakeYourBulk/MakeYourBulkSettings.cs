@@ -2,10 +2,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime;
-using System.Runtime.InteropServices.ComTypes;
 using UnityEngine;
 using Verse;
+using Verse.Sound;
 
 namespace MakeYourBulk
 {
@@ -28,34 +27,48 @@ namespace MakeYourBulk
 
         public void DoWindowContents(Rect canva)
         {
-            ShowCheckboxes(canva);
-            ShowButtons(canva);
-            ShowTextFields(canva);
+            Listing_Standard listing = new Listing_Standard();
+            listing.Begin(canva);
 
-            ShowRecipesList(canva);
+            ShowCheckboxes(listing);
+            listing.GapLine();
 
-            ShowAttentionLabel(canva);
+            ShowButtons(listing);
+            listing.Gap();
+
+            ShowTextFields(listing);
+            listing.Gap(24f);
+
+            ShowRecipesList(listing);
+            listing.Gap();
+
+            ShowAttentionLabel(listing);
+
+            listing.End();
         }
 
-        private void ShowCheckboxes(Rect canva)
+        private void ShowCheckboxes(Listing_Standard listing)
         {
-            Vector2 size = new Vector2(canva.center.x - 50f, 30f);
+            Rect currentRow = listing.GetRect(Text.LineHeight + 4f);
+            Vector2 size = new Vector2(currentRow.center.x, 30f);
 
-            Rect verboseLoggingRect = new Rect(MYB_Data.DefaultSpace, canva.y, size.x, size.y);
+            Rect verboseLoggingRect = new Rect(currentRow.x, currentRow.y, size.x, size.y);
             Widgets.CheckboxLabeled(verboseLoggingRect, MYB_Data.VerboseLogging_Label, ref verboseLogging);
             if (Mouse.IsOver(verboseLoggingRect))
             {
                 TooltipHandler.TipRegion(verboseLoggingRect, MYB_Data.VerboseLogging_Tooltip);
             }
 
-            Rect addUnfinishedThingRect = new Rect(MYB_Data.DefaultSpace + verboseLoggingRect.xMax, canva.y, size.x, size.y);
+            currentRow = listing.GetRect(Text.LineHeight + 4f);
+            Rect addUnfinishedThingRect = new Rect(currentRow.x, currentRow.y, size.x, size.y);
             Widgets.CheckboxLabeled(addUnfinishedThingRect, MYB_Data.AddBulkUnfinishedThing_Label, ref addUnfinishedThing);
             if (Mouse.IsOver(addUnfinishedThingRect))
             {
                 TooltipHandler.TipRegion(addUnfinishedThingRect, MYB_Data.AddBulkUnfinishedThing_Tooltip);
             }
 
-            Rect sameQualityRect = new Rect(MYB_Data.DefaultSpace, canva.y + MYB_Data.DefaultSpace * 1.5f, size.x, size.y);
+            currentRow = listing.GetRect(Text.LineHeight + 4f);
+            Rect sameQualityRect = new Rect(currentRow.x, currentRow.y, size.x, size.y);
             Widgets.CheckboxLabeled(sameQualityRect, MYB_Data.SameQuality_Label, ref sameQuality);
             if (Mouse.IsOver(sameQualityRect))
             {
@@ -63,31 +76,110 @@ namespace MakeYourBulk
             }
         }
 
-        private void ShowButtons(Rect canva)
+        private void ShowButtons(Listing_Standard listing)
         {
-            float start = 70f;
-            Vector2 size = MYB_Data.ThirdSize(canva.width);
+            Rect currentRow = listing.GetRect(Text.LineHeight + 4f);
+            Vector2 size = MYB_Data.ThirdSize(currentRow.width);
 
-            Rect addButtonRect = new Rect(canva.x + MYB_Data.DefaultSpace, canva.y + start, size.x, size.y);
+            Rect addButtonRect = new Rect(currentRow.x, currentRow.y, size.x, size.y);
             if (Widgets.ButtonText(addButtonRect, MYB_Data.AddRecipe_Button))
             {
                 AddButtonPressed();
             }
-            Rect removeButtonRect = new Rect(canva.center.x - (size.x / 2f), canva.y + start, size.x, size.y);
-            if (Widgets.ButtonText(removeButtonRect, MYB_Data.RemoveRecipe_Button))
-            {
-                RemoveButtonPressed();
-            }
-            Rect saveloadListRect = new Rect(canva.center.x - (size.x / 3.5f), canva.y + start + 40f, size.x / (3.5f / 2f), size.y);
+            Rect saveloadListRect = new Rect(currentRow.center.x - size.x / 2f, currentRow.y, size.x, size.y);
             if (Widgets.ButtonText(saveloadListRect, MYB_Data.SaveLoad_Button))
             {
                 SaveLoadButtonPressed();
             }
-            Rect resetButtonRect = new Rect(canva.xMax - size.x - MYB_Data.DefaultSpace, canva.y + start, size.x, size.y);
+            Rect resetButtonRect = new Rect(currentRow.xMax - size.x, currentRow.y, size.x, size.y);
             if (Widgets.ButtonText(resetButtonRect, MYB_Data.Reset_Button))
             {
                 ResetButtonPressed();
             }
+        }
+
+        private void ShowTextFields(Listing_Standard listing)
+        {
+            TextAnchor defaultAnchor = Text.Anchor;
+
+            Rect currentRow = listing.GetRect(Text.LineHeight + 4f);
+            Vector2 size = MYB_Data.ThirdSize(currentRow.width);
+
+            Rect searchBoxRect = new Rect(currentRow.x, currentRow.y, size.x, size.y);
+            searchBoxBuffer = Widgets.TextField(searchBoxRect, searchBoxBuffer);
+
+            Rect searchTextRect = new Rect(searchBoxRect.xMax + 5f, currentRow.y, 200f, size.y);
+            Widgets.Label(searchTextRect, MYB_Data.SearchBox_Label);
+
+            Text.Anchor = TextAnchor.MiddleRight;
+            Rect countTextRect = new Rect(currentRow.xMax - size.x, currentRow.y, size.x, size.y);
+            Widgets.Label(countTextRect, $"({GetShowableBulkRecipes().Count()}/{bulkRecipes.Count})");
+
+            Text.Anchor = defaultAnchor;
+        }
+
+        private void ShowRecipesList(Listing_Standard listing)
+        {
+            List<BulkRecipe> showableRecipes = GetShowableBulkRecipes().ToList();
+
+            Rect currentRow = listing.GetRect(350f);
+
+            float height = 140f;
+            Rect scrollRect = new Rect(currentRow.x, currentRow.y, currentRow.width - MYB_Data.DefaultSpace, showableRecipes.Count * height);
+            Widgets.BeginScrollView(currentRow, ref scrollPosition, scrollRect);
+
+            Listing_Standard scrollListing = new Listing_Standard();
+            scrollListing.Begin(scrollRect);
+
+            foreach (BulkRecipe bulkRecipe in showableRecipes)
+            {
+                float iconSize = 64f;
+                currentRow = scrollListing.GetRect(iconSize + MYB_Data.DefaultSpace);
+
+                Rect thingIconRect = new Rect(currentRow.x, currentRow.y, iconSize, iconSize);
+                Widgets.ThingIcon(thingIconRect, bulkRecipe.recipeDef.ProducedThingDef);
+
+                Rect labelRect = new Rect(thingIconRect.xMax + MYB_Data.DefaultSpace * 2f, currentRow.y + MYB_Data.DefaultSpace, 300f, 30f);
+                Widgets.Label(labelRect, bulkRecipe.Label);
+
+                Rect removeRect = new Rect(currentRow.xMax - 48f - MYB_Data.DefaultSpace, currentRow.y, 48f, 48f);
+                if (Widgets.ButtonImage(removeRect, TexButton.Delete))
+                {
+                    SoundDefOf.Click.PlayOneShotOnCamera();
+                    RemoveBulkRecipe(bulkRecipe);
+                }
+
+
+                Vector2 size = new Vector2((currentRow.width - (MYB_Data.DefaultSpace * 4f)) / 3f, 30f);
+                currentRow = scrollListing.GetRect(size.y + MYB_Data.DefaultSpace);
+
+                FloatRange range = new FloatRange(0.1f, 2f);
+                float roundTo = 0.01f;
+
+                Rect productsRect = new Rect(currentRow.x, thingIconRect.yMax + MYB_Data.DefaultSpace, size.x, size.y);
+                Widgets.TextFieldNumericLabeled(productsRect, $"{MYB_Data.RecipeProducts_Label}   ", ref bulkRecipe.prop.products, ref bulkRecipe.prop.productsBuffer, 1, 1E+05f);
+
+                Rect workAmountRect = new Rect(productsRect.xMax + MYB_Data.DefaultSpace, thingIconRect.yMax + MYB_Data.DefaultSpace, size.x, size.y);
+                string workAmountLabel = $"{MYB_Data.RecipeWorkAmount_Label} {bulkRecipe.prop.workAmount.ToStringPercent()}";
+                Widgets.HorizontalSlider(workAmountRect, ref bulkRecipe.prop.workAmount, range, workAmountLabel, roundTo);
+
+                Rect costRect = new Rect(workAmountRect.xMax + MYB_Data.DefaultSpace, thingIconRect.yMax + MYB_Data.DefaultSpace, size.x, size.y);
+                string costLabel = $"{MYB_Data.RecipeCost_Label} {bulkRecipe.prop.cost.ToStringPercent()}";
+                Widgets.HorizontalSlider(costRect, ref bulkRecipe.prop.cost, range, costLabel, roundTo);
+
+                scrollListing.GapLine(6f);
+            }
+            scrollListing.End();
+
+            Widgets.EndScrollView();
+        }
+
+        private void ShowAttentionLabel(Listing_Standard listing)
+        {
+            Rect currentRow = listing.GetRect(Text.LineHeight + 4f);
+
+            Rect attentionRect = new Rect(currentRow.x, currentRow.yMax - 30f, currentRow.width, 30f);
+            Widgets.Label(attentionRect, MYB_Data.Attention_Label);
         }
 
         private void AddButtonPressed()
@@ -96,28 +188,6 @@ namespace MakeYourBulk
             {
                 bulkRecipes.Add(new BulkRecipe(recipe));
             }));
-        }
-
-        private void RemoveButtonPressed()
-        {
-            if (bulkRecipes.NullOrEmpty())
-            {
-                return;
-            }
-
-            List<FloatMenuOption> list = new List<FloatMenuOption>();
-            foreach (BulkRecipe bulkRecipe in bulkRecipes)
-            {
-                list.Add(new FloatMenuOption(bulkRecipe.Label, delegate
-                {
-                    removedRecipes.Add(bulkRecipe.DefName);
-
-                    bulkRecipes.Remove(bulkRecipe);
-                }));
-            }
-
-            FloatMenu menu = new FloatMenu(list);
-            Find.WindowStack.Add(menu);
         }
 
         private void SaveLoadButtonPressed()
@@ -174,51 +244,40 @@ namespace MakeYourBulk
                     {
                         if (backupList == null)
                         {
-
                             return;
                         }
 
-                        if (replace)
-                        {
-                            Action replaceList = delegate { bulkRecipes = backupList.bulkRecipes.ToList(); };
-
-                            if (!bulkRecipes.Empty())
-                            {
-                                bool isSaved = false;
-                                foreach (ExposableBackupList bl in backupLists)
-                                {
-                                    if (BulkRecipe.CompareLists(bulkRecipes, bl.bulkRecipes))
-                                    {
-                                        isSaved = true;
-                                        replaceList();
-                                        break;
-                                    }
-                                }
-
-                                if (!isSaved)
-                                {
-                                    Find.WindowStack.Add
-                                    (
-                                        new Dialog_MessageBox
-                                        (
-                                            MYB_Data.LoadListDialog_Message(backupList.listName), MYB_Data.Confirm_Button, replaceList,
-                                            MYB_Data.Cancel_Button, null, MYB_Data.LoadListDialog_Title(backupList.listName), true
-                                        )
-                                    );
-                                }
-
-                            }
-                            else
-                            {
-                                replaceList();
-                            }
-                        }
-                        else
+                        if (!replace)
                         {
                             bulkRecipes.AddRange(backupList.bulkRecipes.ToList());
+                            return;
                         }
+
+                        void replaceList()
+                        {
+                            foreach (BulkRecipe bulkRecipe in bulkRecipes.ToList())
+                            {
+                                RemoveBulkRecipe(bulkRecipe);
+                            }
+                            bulkRecipes = backupList.bulkRecipes.ToList();
+                        }
+
+                        if (IsListSaved() || bulkRecipes.Empty())
+                        {
+                            replaceList();
+                            return;
+                        }
+
+                        Find.WindowStack.Add
+                        (
+                            new Dialog_MessageBox
+                            (
+                                MYB_Data.LoadListDialog_Message(backupList.listName), MYB_Data.Confirm_Button, replaceList,
+                                MYB_Data.Cancel_Button, null, MYB_Data.LoadListDialog_Title(backupList.listName), true
+                            )
+                        );
                     }));
-                })
+                    })
             };
 
             FloatMenu menu = new FloatMenu(list);
@@ -232,48 +291,49 @@ namespace MakeYourBulk
                 return;
             }
 
-            Action onConfirm = delegate
+            void resetList()
             {
-                foreach (BulkRecipe bulkRecipe in bulkRecipes)
+                foreach (BulkRecipe bulkRecipe in bulkRecipes.ToList())
                 {
-                    removedRecipes.Add(bulkRecipe.DefName);
+                    RemoveBulkRecipe(bulkRecipe);
                 }
-                bulkRecipes.Clear();
-            };
+            }
 
-            Find.WindowStack.Add(new Dialog_MessageBox(MYB_Data.ResetDialog_Message, MYB_Data.Confirm_Button, onConfirm, MYB_Data.Cancel_Button, null, MYB_Data.Reset_Button, true));
+            if (IsListSaved())
+            {
+                resetList();
+            }
+            else
+            {
+                Find.WindowStack.Add(new Dialog_MessageBox(MYB_Data.ResetDialog_Message, MYB_Data.Confirm_Button, resetList, MYB_Data.Cancel_Button, null, MYB_Data.Reset_Button, true));
+            }
         }
 
-        private void ShowTextFields(Rect canva)
+        private bool IsListSaved()
         {
-            float start = 40f + 70f;
-            Vector2 size = MYB_Data.ThirdSize(canva.width);
+            foreach (ExposableBackupList backupList in backupLists)
+            {
+                if (BulkRecipe.CompareLists(bulkRecipes, backupList.bulkRecipes))
+                {
+                    return true;
+                }
+            }
 
-            Rect searchBoxRect = new Rect(canva.x + MYB_Data.DefaultSpace, canva.y + start, size.x, size.y);
-            searchBoxBuffer = Widgets.TextField(searchBoxRect, searchBoxBuffer);
-
-            Rect searchTextRect = new Rect(searchBoxRect.xMax + 5f, searchBoxRect.center.y - 10f, 200f, size.y);
-            Widgets.Label(searchTextRect, MYB_Data.SearchBox_Label);
+            return false;
         }
 
-        private void ShowRecipesList(Rect canva)
+        private IEnumerable<BulkRecipe> GetShowableBulkRecipes()
         {
-            float start = canva.y + 70f + 80f;
-            float height = 100f + (MYB_Data.DefaultSpace * 2f);
-
-            List<BulkRecipe> showableRecipes = new List<BulkRecipe>();
             foreach (BulkRecipe bulkRecipe in bulkRecipes)
             {
                 if (bulkRecipe == null)
                 {
-                    bulkRecipes.Remove(bulkRecipe);
                     continue;
                 }
 
                 bulkRecipe.AdjustRecipeDef();
                 if (bulkRecipe.recipeDef == null)
                 {
-                    bulkRecipes.Remove(bulkRecipe);
                     continue;
                 }
 
@@ -282,55 +342,14 @@ namespace MakeYourBulk
                     continue;
                 }
 
-                showableRecipes.Add(bulkRecipe);
+                yield return bulkRecipe;
             }
-
-            Rect outRect = new Rect(canva.x, start, canva.width, canva.height - 175f);
-            Rect scrollRect = new Rect(MYB_Data.DefaultSpace, canva.y + start, canva.width - MYB_Data.DefaultSpace, showableRecipes.Count * height);
-            Widgets.BeginScrollView(outRect, ref scrollPosition, scrollRect);
-
-            int index = 0;
-            foreach (BulkRecipe bulkRecipe in showableRecipes)
-            {
-                float recipeStart = (MYB_Data.DefaultSpace * 2f) + start + (index * height);
-
-                Listing_Standard listing = new Listing_Standard();
-                listing.Begin(new Rect(MYB_Data.DefaultSpace, recipeStart, canva.width, canva.height));
-                listing.GapLine();
-                listing.End();
-
-                Rect thingIconRect = new Rect(MYB_Data.DefaultSpace, MYB_Data.DefaultSpace + recipeStart, 64f, 64f);
-                Widgets.ThingIcon(thingIconRect, bulkRecipe.recipeDef.ProducedThingDef);
-                Rect labelRect = new Rect(MYB_Data.DefaultSpace + 70f, recipeStart + MYB_Data.DefaultSpace, 300f, 30f);
-                Widgets.Label(labelRect, bulkRecipe.Label);
-
-                float posY = recipeStart + 100f;
-                Vector2 size = new Vector2((canva.width - (MYB_Data.DefaultSpace * 4f)) / 3f, 30f);
-
-                FloatRange range = new FloatRange(0.1f, 2f);
-                float roundTo = 0.05f;
-
-                Rect productsRect = new Rect(0f, posY, size.x, size.y);
-                Widgets.TextFieldNumericLabeled(productsRect, $"{MYB_Data.RecipeProducts_Label}   ", ref bulkRecipe.prop.products, ref bulkRecipe.prop.productsBuffer, 1, 1E+05f);
-
-                Rect workAmountRect = new Rect(canva.center.x - (size.x / 2f) + MYB_Data.DefaultSpace, posY, size.x, size.y);
-                string workAmountLabel = $"{MYB_Data.RecipeWorkAmount_Label} {bulkRecipe.prop.workAmount.ToStringPercent()}";
-                Widgets.HorizontalSlider(workAmountRect, ref bulkRecipe.prop.workAmount, range, workAmountLabel, roundTo);
-
-                Rect costRect = new Rect(canva.xMax - size.x, posY, size.x, size.y);
-                string costLabel = $"{MYB_Data.RecipeCost_Label} {bulkRecipe.prop.cost.ToStringPercent()}";
-                Widgets.HorizontalSlider(costRect, ref bulkRecipe.prop.cost, range, costLabel, roundTo);
-
-                index++;
-            }
-
-            Widgets.EndScrollView();
         }
 
-        private void ShowAttentionLabel(Rect canva)
+        private void RemoveBulkRecipe(BulkRecipe bulkRecipe)
         {
-            Rect attentionRect = new Rect(canva.x, canva.yMax - 30f, canva.width, 30f);
-            Widgets.Label(attentionRect, MYB_Data.Attention_Label);
+            removedRecipes.Add(bulkRecipe.DefName);
+            bulkRecipes.Remove(bulkRecipe);
         }
 
         public void AddToDatabase()

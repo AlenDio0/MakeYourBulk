@@ -61,8 +61,12 @@ namespace MakeYourBulk
                 return false;
             }
 
-            var sortedList1 = list1.OrderBy(x => x.recipeDef.defName).ToList();
-            var sortedList2 = list2.OrderBy(x => x.recipeDef.defName).ToList();
+            var sortedList1 = list1.Where(x => x != null && x.recipeDef != null).OrderBy(x => x.recipeDef.defName).ToList();
+            var sortedList2 = list2.Where(x => x != null && x.recipeDef != null).OrderBy(x => x.recipeDef.defName).ToList();
+            if (sortedList1.Count != sortedList2.Count)
+            {
+                return false;
+            }
 
             for (int i = 0; i < sortedList1.Count; i++)
             {
@@ -144,11 +148,11 @@ namespace MakeYourBulk
                 workToMake = recipeDef.WorkAmountForStuff(producedThing.thingDef);
             }
 
-            RecipeDef bulkRecipeDef = CopyFromRecipe(recipeDef);
+            RecipeDef bulkRecipeDef = CopyRecipe(recipeDef);
             bulkRecipeDef.defName = DefName;
             bulkRecipeDef.label = Label;
             bulkRecipeDef.description = $"{Label}\n\n[{MYB_Data.SpacedModName} Mod]";
-            bulkRecipeDef.jobString = $"{MYB_Data.JobPrefix} {producedThing.thingDef.label} x{prop.products}";
+            bulkRecipeDef.jobString = $"{MYB_Data.JobPrefix} {producedThing.thingDef.label} x{RealProducts}";
             bulkRecipeDef.workAmount = workToMake * prop.workAmount * prop.products;
             bulkRecipeDef.smeltingWorkAmount = workToMake * prop.workAmount * prop.products;
 
@@ -195,12 +199,12 @@ namespace MakeYourBulk
             return bulkRecipeDef;
         }
 
-        private RecipeDef CopyFromRecipe(RecipeDef copy)
+        private RecipeDef CopyRecipe(RecipeDef copy)
         {
             return new RecipeDef
             {
                 displayPriority = copy.displayPriority,
-                modContentPack = copy.modContentPack,
+                modContentPack = MakeYourBulkMod.modContent,
                 useIngredientsForColor = copy.useIngredientsForColor,
                 allowMixingIngredients = copy.allowMixingIngredients,
                 fixedIngredientFilter = copy.fixedIngredientFilter,

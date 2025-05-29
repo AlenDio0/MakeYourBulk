@@ -7,11 +7,13 @@ namespace MakeYourBulk
     public class MakeYourBulkMod : Mod
     {
         public static MakeYourBulkSettings settings;
+        public static ModContentPack modContent;
 
         public MakeYourBulkMod(ModContentPack content)
             : base(content)
         {
             settings = GetSettings<MakeYourBulkSettings>();
+            modContent = content;
             LongEventHandler.ExecuteWhenFinished(settings.AddToDatabase);
         }
 
