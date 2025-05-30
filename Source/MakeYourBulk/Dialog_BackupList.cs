@@ -1,7 +1,9 @@
-﻿using System;
+﻿using RimWorld;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using Verse;
+using Verse.Sound;
 
 namespace MakeYourBulk
 {
@@ -76,58 +78,74 @@ namespace MakeYourBulk
 
         public override void DoWindowContents(Rect canva)
         {
-            float space = 20f;
-            Vector2 buttonSize = new Vector2(70f, 30f);
+            Vector2 size = new Vector2(70f, 30f);
+
+            Listing_Standard listing = new Listing_Standard();
+            listing.Begin(canva);
 
             Text.Font = GameFont.Medium;
-            Rect titleRect = new Rect(canva.x, canva.y, canva.width, buttonSize.y);
+            Rect currentRow = listing.GetRect(Text.LineHeight + 4f);
+
+            Rect titleRect = new Rect(currentRow.x, currentRow.y, currentRow.width, size.y);
             Widgets.Label(titleRect, MYB_Data.Load_Option);
             Text.Font = GameFont.Small;
 
-            float start = canva.y + 20f;
+            listing.GapLine();
+            currentRow = listing.GetRect(250f);
             if (backupLists.NullOrEmpty())
             {
-                Widgets.Label(new Rect(canva.x, start + space, canva.width, buttonSize.y), MYB_Data.LoadListEmpty_Label);
+                Widgets.Label(new Rect(currentRow.x, currentRow.y, currentRow.width, size.y), MYB_Data.LoadListEmpty_Label);
+
+                listing.End();
                 return;
             }
 
-            Rect scrollRect = new Rect(canva.x, titleRect.yMax + 10f, canva.width, canva.height - 100f);
-            Rect viewRect = new Rect(canva.x, canva.y, scrollRect.width - space, (backupLists.Count * 40f) + space);
-            Widgets.BeginScrollView(scrollRect, ref scrollPosition, viewRect);
+            float height = 40f;
+            Rect scrollRect = new Rect(currentRow.x, currentRow.y, currentRow.width - MYB_Data.DefaultSpace, backupLists.Count * (height + 12f));
+            Widgets.BeginScrollView(currentRow, ref scrollPosition, scrollRect);
+
+            Listing_Standard scrollListing = new Listing_Standard();
+            scrollListing.Begin(scrollRect);
+
             foreach (ExposableBackupList backupList in backupLists)
             {
-                GUI.color = new Color(0.8f, 0.8f, 0.8f, 0.5f);
-                Widgets.DrawLineHorizontal(0f, start, canva.width);
-                GUI.color = Color.white;
+                currentRow = scrollListing.GetRect(height);
 
-                Rect listNameRect = new Rect(canva.x + 12.5f, start + 5f, 300f, buttonSize.y);
+                Rect listNameRect = new Rect(currentRow.x, currentRow.y, currentRow.width, size.y);
                 Widgets.Label(listNameRect, backupList.listName);
 
-                Rect deleteButtonRect = new Rect(viewRect.width - buttonSize.y, start + 5f, buttonSize.y, buttonSize.y);
+                float iconSize = 32f;
+                Rect deleteButtonRect = new Rect(currentRow.xMax - iconSize, currentRow.y, iconSize, iconSize);
                 if (Widgets.ButtonImage(deleteButtonRect, TexButton.Delete))
                 {
+                    SoundDefOf.Click.PlayOneShotOnCamera();
                     Find.WindowStack.Add(new Dialog_MessageBox
                     (
                         MYB_Data.DeleteListDialog_Message(backupList.listName), MYB_Data.Confirm_Button, delegate { backupLists.Remove(backupList); },
                         MYB_Data.Cancel_Button, null, MYB_Data.DeleteListDialog_Title(backupList.listName), true
                     ));
                 }
-                Rect loadButtonRect = new Rect(deleteButtonRect.x - buttonSize.x - 5f, start + 5f, buttonSize.x, buttonSize.y);
+                Rect loadButtonRect = new Rect(deleteButtonRect.x - size.x, currentRow.y, size.x, size.y);
                 if (Widgets.ButtonText(loadButtonRect, MYB_Data.LoadList_Button))
                 {
                     onLoad?.Invoke(backupList, true);
                     base.Close();
                 }
-                Rect addButtonRect = new Rect(loadButtonRect.x - buttonSize.x - 5f, start + 5f, buttonSize.x, buttonSize.y);
+                Rect addButtonRect = new Rect(loadButtonRect.x - size.x, currentRow.y, size.x, size.y);
                 if (Widgets.ButtonText(addButtonRect, MYB_Data.AddList_Button))
                 {
                     onLoad?.Invoke(backupList, false);
                     base.Close();
                 }
 
-                start += 40f;
+                scrollListing.GapLine();
             }
             Widgets.EndScrollView();
+
+            scrollListing.End();
+
+            listing.GapLine();
+            listing.End();
         }
     }
 }

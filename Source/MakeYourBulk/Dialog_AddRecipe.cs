@@ -29,8 +29,6 @@ namespace MakeYourBulk
 
         public override void DoWindowContents(Rect canva)
         {
-            float height = 80f;
-
             Text.Font = GameFont.Medium;
             Widgets.Label(new Rect(canva.x, canva.y, canva.width, 30f), MYB_Data.AddRecipe_Button);
 
@@ -52,6 +50,8 @@ namespace MakeYourBulk
             string recipeCount = $"{(recipes.Count >= 10000 ? (float)recipes.Count / 1000f : recipes.Count)}" + (recipes.Count >= 10000 ? "k" : "");
             Rect recipeCountRect = new Rect(searchBarRect.xMax + MYB_Data.DefaultSpace, 40f, 100f, 30f);
             Widgets.Label(recipeCountRect, $"{MYB_Data.RecipesCount_Label}: {recipes.Count}");
+
+            float height = 80f;
 
             Text.Font = GameFont.Medium;
             Rect scrollRect = new Rect(canva.x, searchBarRect.yMax + MYB_Data.DefaultSpace, canva.width, canva.height - 150f);

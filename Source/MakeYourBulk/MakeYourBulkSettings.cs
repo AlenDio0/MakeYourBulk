@@ -122,7 +122,8 @@ namespace MakeYourBulk
         {
             List<BulkRecipe> showableRecipes = GetShowableBulkRecipes().ToList();
 
-            Rect currentRow = listing.GetRect(350f);
+            listing.GapLine();
+            Rect currentRow = listing.GetRect(325f);
 
             float height = 140f;
             Rect scrollRect = new Rect(currentRow.x, currentRow.y, currentRow.width - MYB_Data.DefaultSpace, showableRecipes.Count * height);
@@ -149,7 +150,6 @@ namespace MakeYourBulk
                     RemoveBulkRecipe(bulkRecipe);
                 }
 
-
                 Vector2 size = new Vector2((currentRow.width - (MYB_Data.DefaultSpace * 4f)) / 3f, 30f);
                 currentRow = scrollListing.GetRect(size.y + MYB_Data.DefaultSpace);
 
@@ -169,9 +169,11 @@ namespace MakeYourBulk
 
                 scrollListing.GapLine(6f);
             }
+            Widgets.EndScrollView();
+
             scrollListing.End();
 
-            Widgets.EndScrollView();
+            listing.GapLine();
         }
 
         private void ShowAttentionLabel(Listing_Standard listing)

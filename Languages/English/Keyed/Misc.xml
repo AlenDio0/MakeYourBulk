@@ -24,7 +24,7 @@
 	<AddList_Button>Add</AddList_Button>
 	<LoadListEmpty_Label>No saved list.</LoadListEmpty_Label>
 	<EmptyList_Message>Can't save an empty list!</EmptyList_Message>
-	<LoadListDialog_Message>Your current list is not saved! If you load this list, you will loose the current one.\nAre you sure you want to load '{0}' list?\n\nWARNING: This action is irreversible!</LoadListDialog_Message>
+	<LoadListDialog_Message>Your current list is not saved! If you load this list, you will lose the current one.\nAre you sure you want to load '{0}' list?\n\nWARNING: This action is irreversible!</LoadListDialog_Message>
 	<LoadListDialog_Title>Load '{0}' list</LoadListDialog_Title>
 	<DeleteListDialog_Message>Are you sure you want to delete '{0}' list?\n\nWARNING: This action is irreversible!</DeleteListDialog_Message>
 	<DeleteListDialog_Title>Delete '{0}' list</DeleteListDialog_Title>

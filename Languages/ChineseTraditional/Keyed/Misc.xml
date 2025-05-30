@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+	<DefaultListName>列表名稱</DefaultListName>
+	
+	<VerboseLogging_Label>詳細日誌記錄</VerboseLogging_Label>
+	<AddBulkUnfinishedThing_Label>添加批量未完成物品</AddBulkUnfinishedThing_Label>
+	<SameQuality_Label>相同品質</SameQuality_Label>
+	
+	<VerboseLogging_Tooltip>啟用追蹤日誌</VerboseLogging_Tooltip>
+	<AddBulkUnfinishedThing_Tooltip>允許存儲和稍後繼續部分完成的物品\n（需要重啟）</AddBulkUnfinishedThing_Tooltip>
+	<SameQuality_Tooltip>配方的所有產物將具有相同的品質（需要重啟）</SameQuality_Tooltip>
+	
+	<AddRecipe_Button>添加配方</AddRecipe_Button>
+	<RemoveRecipe_Button>移除配方</RemoveRecipe_Button>
+	<SaveLoad_Button>保存/加載列表</SaveLoad_Button>
+	<Reset_Button>重置列表</Reset_Button>
+	
+	<RecipesCount_Label>配方</RecipesCount_Label>
+	
+	<Save_Option>保存列表</Save_Option>
+	<Load_Option>加載列表</Load_Option>
+	<SaveList_Button>保存</SaveList_Button>
+	<LoadList_Button>加載</LoadList_Button>
+	<AddList_Button>添加</AddList_Button>
+	<LoadListEmpty_Label>沒有已保存的列表。</LoadListEmpty_Label>
+	<EmptyList_Message>無法保存空列表！</EmptyList_Message>
+	<LoadListDialog_Message>當前列表未保存！如果加載此列表，當前列表將丟失。\n您確定要加載「{0}」列表嗎？\n\n警告：此操作不可逆！</LoadListDialog_Message>
+	<LoadListDialog_Title>加載「{0}」列表</LoadListDialog_Title>
+	<DeleteListDialog_Message>您確定要刪除「{0}」列表嗎？\n\n警告：此操作不可逆！</DeleteListDialog_Message>
+	<DeleteListDialog_Title>刪除「{0}」列表</DeleteListDialog_Title>
+	
+	<ResetDialog_Message>您確定要重置列表嗎？\n\n警告：此操作不可逆！</ResetDialog_Message>
+	
+	<SearchBox_Label>搜尋</SearchBox_Label>
+	
+	<RecipePrefix>製作</RecipePrefix>
+	<JobPrefix>正在製作</JobPrefix>
+	
+	<RecipeProducts_Label>產物</RecipeProducts_Label>
+	<RecipeWorkAmount_Label>工作量</RecipeWorkAmount_Label>
+	<RecipeCost_Label>成本</RecipeCost_Label>
+	
+	<Attention_Label>注意：如果您添加、修改或移除配方，建議重啟遊戲。</Attention_Label>
+	
+	<Confirm_Button>確認</Confirm_Button>
+	<Cancel_Button>取消</Cancel_Button>
+</LanguageData>
