@@ -108,11 +108,11 @@ namespace MakeYourBulk
             Rect searchBoxRect = new Rect(currentRow.x, currentRow.y, size.x, size.y);
             searchBoxBuffer = Widgets.TextField(searchBoxRect, searchBoxBuffer);
 
-            Rect searchTextRect = new Rect(searchBoxRect.xMax + 5f, currentRow.y, 200f, size.y);
+            Rect searchTextRect = new Rect(searchBoxRect.xMax + 5f, currentRow.y + 5f, 200f, size.y);
             Widgets.Label(searchTextRect, MYB_Data.SearchBox_Label);
 
             Text.Anchor = TextAnchor.MiddleRight;
-            Rect countTextRect = new Rect(currentRow.xMax - size.x, currentRow.y, size.x, size.y);
+            Rect countTextRect = new Rect(currentRow.xMax - size.x, currentRow.y + 5f, size.x, size.y);
             Widgets.Label(countTextRect, $"({GetShowableBulkRecipes().Count()}/{bulkRecipes.Count})");
 
             Text.Anchor = defaultAnchor;

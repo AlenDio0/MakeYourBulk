@@ -29,10 +29,21 @@ namespace MakeYourBulk
 
         public override void DoWindowContents(Rect canva)
         {
-            Text.Font = GameFont.Medium;
-            Widgets.Label(new Rect(canva.x, canva.y, canva.width, 30f), MYB_Data.AddRecipe_Button);
+            GameFont defaultFont = Text.Font;
 
-            Rect searchBarRect = new Rect(canva.x, 40f, 400f, 30f);
+            Listing_Standard listing = new Listing_Standard();
+            listing.Begin(canva);
+
+            Text.Font = GameFont.Medium;
+            Rect currentRow = listing.GetRect(Text.LineHeight + 4f);
+
+            Rect titleRect = new Rect(currentRow.x, currentRow.y, currentRow.width, 30f);
+            Widgets.Label(titleRect, MYB_Data.AddRecipe_Button);
+
+            Text.Font = GameFont.Small;
+            currentRow = listing.GetRect(30f + MYB_Data.DefaultSpace);
+
+            Rect searchBarRect = new Rect(currentRow.x, currentRow.y, 400f, 30f);
             searchBoxBuffer = Widgets.TextField(searchBarRect, searchBoxBuffer);
 
             List<RecipeDef> recipes = new List<RecipeDef>();
@@ -46,28 +57,25 @@ namespace MakeYourBulk
                 recipes.Add(recipeDef);
             }
 
-            Text.Font = GameFont.Small;
-            string recipeCount = $"{(recipes.Count >= 10000 ? (float)recipes.Count / 1000f : recipes.Count)}" + (recipes.Count >= 10000 ? "k" : "");
+            string recipeCount = (recipes.Count >= 10000 ? recipes.Count / 1000f : recipes.Count) + (recipes.Count >= 10000 ? "k" : "");
             Rect recipeCountRect = new Rect(searchBarRect.xMax + MYB_Data.DefaultSpace, 40f, 100f, 30f);
             Widgets.Label(recipeCountRect, $"{MYB_Data.RecipesCount_Label}: {recipes.Count}");
 
-            float height = 80f;
+            listing.GapLine();
+            currentRow = listing.GetRect(canva.height - listing.CurHeight - 100f);
 
-            Text.Font = GameFont.Medium;
-            Rect scrollRect = new Rect(canva.x, searchBarRect.yMax + MYB_Data.DefaultSpace, canva.width, canva.height - 150f);
-            Rect viewRect = new Rect(canva.x, canva.y, scrollRect.width - MYB_Data.DefaultSpace, recipes.Count * height);
-            Widgets.BeginScrollView(scrollRect, ref scrollPosition, viewRect);
+            float height = 50f;
+            Rect scrollRect = new Rect(currentRow.x, currentRow.y, currentRow.width - MYB_Data.DefaultSpace, recipes.Count * (height + 12f));
+            Widgets.BeginScrollView(currentRow, ref scrollPosition, scrollRect);
 
-            int index = 0;
+            Listing_Standard scrollListing = new Listing_Standard();
+            scrollListing.Begin(scrollRect);
+
             foreach (var recipe in recipes)
             {
-                float recipeStart = (index * height);
-                Listing_Standard listing = new Listing_Standard();
-                listing.Begin(new Rect(canva.x, recipeStart - MYB_Data.DefaultSpace, canva.width - MYB_Data.DefaultSpace, canva.height));
-                listing.GapLine();
-                listing.End();
+                currentRow = scrollListing.GetRect(height);
 
-                Rect clickableRect = new Rect(canva.x, recipeStart, canva.width - MYB_Data.DefaultSpace, 50f);
+                Rect clickableRect = new Rect(currentRow.x, currentRow.y, currentRow.width - MYB_Data.DefaultSpace, 50f);
                 if (Mouse.IsOver(clickableRect))
                 {
                     Widgets.DrawHighlight(clickableRect);
@@ -78,14 +86,24 @@ namespace MakeYourBulk
                     base.Close();
                 }
 
-                Rect thingIconRect = new Rect(canva.x, recipeStart, 48f, 48f);
-                Widgets.ThingIcon(thingIconRect, recipe.ProducedThingDef);
-                Rect labelRect = new Rect(thingIconRect.xMax + MYB_Data.DefaultSpace * 2f, recipeStart, canva.xMax - thingIconRect.xMax + MYB_Data.DefaultSpace * 2f, 50f);
-                Widgets.Label(labelRect, recipe.LabelCap);
-                index++;
-            }
+                float iconSize = 48f;
+                Rect thingIconRect = new Rect(currentRow.x, currentRow.y, iconSize, iconSize);
+                ThingDef thingDef = recipe.ProducedThingDef;
+                Widgets.ThingIcon(thingIconRect, thingDef);
 
+                Rect labelRect = new Rect(thingIconRect.xMax + MYB_Data.DefaultSpace * 2f, currentRow.y, currentRow.width, 50f);
+                Widgets.Label(labelRect, recipe.LabelCap);
+
+                scrollListing.GapLine();
+            }
             Widgets.EndScrollView();
+
+            scrollListing.End();
+
+            listing.GapLine();
+            listing.End();
+
+            Text.Font = defaultFont;
         }
     }
 }
