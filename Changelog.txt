@@ -1,6 +1,16 @@
+## 2.3.0 (21-06-2025)
+
+ADDED: Duplicate button for bulk recipe [APR].
+REMOVED: 0Harmony.dll on Assemblies.
+
+## 2.2.0 (30-05-2025)
+
+ADDED: Delete button for bulk recipe.
+FIXED: Scrollable lists.
+
 ## 2.1.0 (05-04-2025)
 
-ADDED: Changelog.txt and .gitignore
+ADDED: Changelog.txt and .gitignore.
 FIXED: Reloading twice the bulk recipe into DefDatabase.
 FIXED: Typo in Harmony id.
 

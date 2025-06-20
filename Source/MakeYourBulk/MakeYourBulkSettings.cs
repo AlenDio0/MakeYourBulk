@@ -143,11 +143,18 @@ namespace MakeYourBulk
                 Rect labelRect = new Rect(thingIconRect.xMax + MYB_Data.DefaultSpace * 2f, currentRow.y + MYB_Data.DefaultSpace, 300f, 30f);
                 Widgets.Label(labelRect, bulkRecipe.Label);
 
-                Rect removeRect = new Rect(currentRow.xMax - 48f - MYB_Data.DefaultSpace, currentRow.y, 48f, 48f);
+                float toolSize = 32f;
+                Rect removeRect = new Rect(currentRow.xMax - toolSize - MYB_Data.DefaultSpace, currentRow.y, toolSize, toolSize);
                 if (Widgets.ButtonImage(removeRect, TexButton.Delete))
                 {
                     SoundDefOf.Click.PlayOneShotOnCamera();
                     RemoveBulkRecipe(bulkRecipe);
+                }
+                Rect copyRect = new Rect(removeRect.x - toolSize - MYB_Data.DefaultSpace, currentRow.y, toolSize, toolSize);
+                if (Widgets.ButtonImage(copyRect, TexButton.Copy))
+                {
+                    SoundDefOf.Click.PlayOneShotOnCamera();
+                    CopyBulkRecipe(bulkRecipe);
                 }
 
                 Vector2 size = new Vector2((currentRow.width - (MYB_Data.DefaultSpace * 4f)) / 3f, 30f);
@@ -352,6 +359,16 @@ namespace MakeYourBulk
         {
             removedRecipes.Add(bulkRecipe.DefName);
             bulkRecipes.Remove(bulkRecipe);
+        }
+
+        private void CopyBulkRecipe(BulkRecipe bulkRecipe)
+        {
+            BulkRecipe copy = new BulkRecipe(bulkRecipe.recipeDef);
+            copy.prop.products = bulkRecipe.prop.products;
+            copy.prop.workAmount = bulkRecipe.prop.workAmount;
+            copy.prop.cost = bulkRecipe.prop.cost;
+
+            bulkRecipes.Add(copy);
         }
 
         public void AddToDatabase()
