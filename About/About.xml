@@ -22,8 +22,9 @@ Go to "Settings -> Mod Options -> Make Your Bulk".
 	</description>
 	<supportedVersions>
 		<li>1.5</li>
+		<li>1.6</li>
 	</supportedVersions>
-	<modVersion IgnoreIfNoMatchingField="True">2.3.0</modVersion>
+	<modVersion IgnoreIfNoMatchingField="True">3.0.0</modVersion>
 	<modDependencies>
 		<li>
 			<packageId>brrainz.harmony</packageId>
@@ -36,6 +37,7 @@ Go to "Settings -> Mod Options -> Make Your Bulk".
 		<li>Ludeon.RimWorld.Royalty</li>
 		<li>Ludeon.RimWorld.Biotech</li>
 		<li>Ludeon.RimWorld.Anomaly</li>
+		<li>Ludeon.RimWorld.Odissey</li>
 	</loadAfter>
 	<loadBefore>
 		<li>sarg.alphaimplants</li>

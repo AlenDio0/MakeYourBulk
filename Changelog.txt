@@ -1,3 +1,7 @@
+## 3.0.0 (21-06-2025)
+
+UPDATE: RimWorld version 1.6.
+
 ## 2.3.0 (21-06-2025)
 
 ADDED: Duplicate button for bulk recipe [APR].
