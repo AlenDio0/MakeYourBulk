@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <LanguageData>
-	<DefaultListName>列表名称</DefaultListName>
-	
 	<VerboseLogging_Label>详细日志记录</VerboseLogging_Label>
 	<AddBulkUnfinishedThing_Label>添加批量未完成物品</AddBulkUnfinishedThing_Label>
 	<SameQuality_Label>固定质量</SameQuality_Label>
@@ -12,7 +10,7 @@
 	
 	<AddRecipe_Button>添加配方</AddRecipe_Button>
 	<RemoveRecipe_Button>移除配方</RemoveRecipe_Button>
-	<SaveLoad_Button>保存/加载列表</SaveLoad_Button>
+	<SaveLoad_Button>保存 / 加载列表</SaveLoad_Button>
 	<Reset_Button>重置列表</Reset_Button>
 	
 	<RecipesCount_Label>配方</RecipesCount_Label>
@@ -24,12 +22,12 @@
 	<AddList_Button>添加</AddList_Button>
 	<LoadListEmpty_Label>没有已保存的列表。</LoadListEmpty_Label>
 	<EmptyList_Message>无法保存空列表！</EmptyList_Message>
-	<LoadListDialog_Message>当前列表未保存！如果加载此列表，当前列表将丢失。\n您确定要加载“{0}”列表吗？\n\n警告：此操作不可逆！</LoadListDialog_Message>
+	<LoadListDialog_Message>当前列表未保存！如果加载此列表，当前列表将丢失。\n您确定要加载“{0}”列表吗？\n警告：此操作不可逆！</LoadListDialog_Message>
 	<LoadListDialog_Title>加载“{0}”列表</LoadListDialog_Title>
-	<DeleteListDialog_Message>您确定要删除“{0}”列表吗？\n\n警告：此操作不可逆！</DeleteListDialog_Message>
+	<DeleteListDialog_Message>您确定要删除“{0}”列表吗？\n警告：此操作不可逆！</DeleteListDialog_Message>
 	<DeleteListDialog_Title>删除“{0}”列表</DeleteListDialog_Title>
 	
-	<ResetDialog_Message>您确定要重置列表吗？\n\n警告：此操作不可逆！</ResetDialog_Message>
+	<ResetDialog_Message>您确定要重置列表吗？\n警告：此操作不可逆！</ResetDialog_Message>
 	
 	<SearchBox_Label>搜索</SearchBox_Label>
 	

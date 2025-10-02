@@ -1,19 +1,25 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using Verse;
+
 namespace MakeYourBulk
 {
+    [HotSwappable]
     public class Dialog_AddRecipe : Window
     {
-        private readonly Action<RecipeDef> onSelected;
+        private readonly List<BulkRecipe> m_BulkRecipes;
 
-        string searchBoxBuffer = "";
+        private List<RecipeDef> m_CachedShowableRecipes = null;
+        private string m_LastSearchboxBuffer;
+        private int m_LastDefsCount = 0;
 
-        private Vector2 scrollPosition = Vector2.zero;
+        private string m_SearchboxBuffer = "";
 
-        public Dialog_AddRecipe(Action<RecipeDef> onSelected)
+        private Vector2 m_ScrollPosition = Vector2.zero;
+        private float m_ScrollViewHeight = 0f;
+
+        public Dialog_AddRecipe(in List<BulkRecipe> bulkRecipes)
         {
             forcePause = true;
             doCloseButton = true;
@@ -22,88 +28,116 @@ namespace MakeYourBulk
             closeOnClickedOutside = true;
             absorbInputAroundWindow = true;
 
-            this.onSelected = onSelected;
+            m_BulkRecipes = bulkRecipes;
         }
 
         public override Vector2 InitialSize => new Vector2(600f, 800f);
 
+        private List<RecipeDef> GetShowableRecipeList()
+        {
+            bool database = DefDatabase<RecipeDef>.AllDefsListForReading.Count != m_LastDefsCount;
+            bool searchbox = m_SearchboxBuffer != m_LastSearchboxBuffer;
+
+            if (m_CachedShowableRecipes == null || database || searchbox)
+            {
+                m_LastSearchboxBuffer = m_SearchboxBuffer;
+                m_LastDefsCount = DefDatabase<RecipeDef>.AllDefsListForReading.Count;
+
+                m_CachedShowableRecipes = DefDatabase<RecipeDef>.AllDefs
+                .Where(recipe => BulkRecipe.CanBeBulk(recipe))
+                .Where(recipe => !m_BulkRecipes.Select(bRecipe => bRecipe.DefName).Contains(recipe.defName))
+                .Where(recipe => m_SearchboxBuffer.NullOrEmpty() || recipe.label.ToLower().Contains(m_SearchboxBuffer.ToLower()))
+                .ToList();
+            }
+
+            return m_CachedShowableRecipes;
+        }
+
         public override void DoWindowContents(Rect canva)
         {
-            GameFont defaultFont = Text.Font;
+            Rect topRect = canva.TopPart(0.125f).BottomPart(0.9f);
+            Rect bottomRect = canva.BottomPart(0.85f).TopPart(0.9f);
 
-            Listing_Standard listing = new Listing_Standard();
-            listing.Begin(canva);
+            Rect titleRect = topRect.TopPart(0.4f);
+            Rect searchRect = topRect.BottomPart(0.55f).TopPart(0.65f);
+            Rect recipeRect = bottomRect;
 
+            ShowTitleLabel(titleRect);
+            ShowSearchBox(searchRect);
+
+            Widgets.DrawLineHorizontal(topRect.x, topRect.yMax, topRect.width, Widgets.SeparatorLineColor);
+
+            ShowRecipeList(recipeRect);
+        }
+
+        private void ShowTitleLabel(Rect titleRect)
+        {
             Text.Font = GameFont.Medium;
-            Rect currentRow = listing.GetRect(Text.LineHeight + 4f);
-
-            Rect titleRect = new Rect(currentRow.x, currentRow.y, currentRow.width, 30f);
             Widgets.Label(titleRect, MYB_Data.AddRecipe_Button);
-
             Text.Font = GameFont.Small;
-            currentRow = listing.GetRect(30f + MYB_Data.DefaultSpace);
+        }
 
-            Rect searchBarRect = new Rect(currentRow.x, currentRow.y, 400f, 30f);
-            searchBoxBuffer = Widgets.TextField(searchBarRect, searchBoxBuffer);
+        private void ShowSearchBox(Rect searchRect)
+        {
+            Rect searchboxRect = searchRect.LeftPart(0.65f);
+            Rect searchLabelRect = searchRect.RightPart(0.325f).BottomPart(0.8f);
 
-            List<RecipeDef> recipes = new List<RecipeDef>();
-            foreach (RecipeDef recipeDef in DefDatabase<RecipeDef>.AllDefs.Where(r => BulkRecipe.CanBeBulk(r)))
+            m_SearchboxBuffer = Widgets.TextField(searchboxRect, m_SearchboxBuffer);
+
+            int recipeCount = GetShowableRecipeList().Count;
+            string recipeCountStr =
+                recipeCount <= 10000 ? recipeCount.ToString() :
+                $"{recipeCount / 1000}k";
+
+            Widgets.Label(searchLabelRect, $"{MYB_Data.RecipesCount_Label}: {recipeCountStr}");
+        }
+
+        private void ShowRecipeList(Rect recipeRect)
+        {
+            List<RecipeDef> recipes = GetShowableRecipeList();
+
+            Rect outRect = new Rect(Vector2.zero, recipeRect.size);
+            Rect viewRect = new Rect(Vector2.zero, new Vector2(recipeRect.width - MYB_Data.GapX, m_ScrollViewHeight));
+
+            GUI.BeginGroup(recipeRect);
+            Widgets.BeginScrollView(outRect, ref m_ScrollPosition, viewRect, true);
+
+            const float height = 64f;
+            float currentHeight = 0f;
+            foreach (RecipeDef recipe in recipes)
             {
-                if (!recipeDef.label.ToLower().Contains(searchBoxBuffer.ToLower()) && !searchBoxBuffer.NullOrEmpty())
-                {
-                    continue;
-                }
+                Rect entryRect = new Rect(0f, currentHeight, viewRect.width, height);
+                Rect gapRect = entryRect.BottomPart(0.1f);
 
-                recipes.Add(recipeDef);
+                ShowRecipeEntry(entryRect, recipe);
+
+                Widgets.DrawLineHorizontal(gapRect.x, gapRect.y, gapRect.width, Widgets.SeparatorLineColor);
+
+                currentHeight += height;
             }
+            m_ScrollViewHeight = currentHeight;
 
-            string recipeCount = (recipes.Count >= 10000 ? recipes.Count / 1000f : recipes.Count) + (recipes.Count >= 10000 ? "k" : "");
-            Rect recipeCountRect = new Rect(searchBarRect.xMax + MYB_Data.DefaultSpace, 40f, 100f, 30f);
-            Widgets.Label(recipeCountRect, $"{MYB_Data.RecipesCount_Label}: {recipes.Count}");
-
-            listing.GapLine();
-            currentRow = listing.GetRect(canva.height - listing.CurHeight - 100f);
-
-            float height = 50f;
-            Rect scrollRect = new Rect(currentRow.x, currentRow.y, currentRow.width - MYB_Data.DefaultSpace, recipes.Count * (height + 12f));
-            Widgets.BeginScrollView(currentRow, ref scrollPosition, scrollRect);
-
-            Listing_Standard scrollListing = new Listing_Standard();
-            scrollListing.Begin(scrollRect);
-
-            foreach (var recipe in recipes)
-            {
-                currentRow = scrollListing.GetRect(height);
-
-                Rect clickableRect = new Rect(currentRow.x, currentRow.y, currentRow.width - MYB_Data.DefaultSpace, 50f);
-                if (Mouse.IsOver(clickableRect))
-                {
-                    Widgets.DrawHighlight(clickableRect);
-                }
-                if (Widgets.ButtonInvisible(clickableRect))
-                {
-                    onSelected?.Invoke(recipe);
-                    base.Close();
-                }
-
-                float iconSize = 48f;
-                Rect thingIconRect = new Rect(currentRow.x, currentRow.y, iconSize, iconSize);
-                ThingDef thingDef = recipe.ProducedThingDef;
-                Widgets.ThingIcon(thingIconRect, thingDef);
-
-                Rect labelRect = new Rect(thingIconRect.xMax + MYB_Data.DefaultSpace * 2f, currentRow.y, currentRow.width, 50f);
-                Widgets.Label(labelRect, recipe.LabelCap);
-
-                scrollListing.GapLine();
-            }
             Widgets.EndScrollView();
+            GUI.EndGroup();
+        }
 
-            scrollListing.End();
+        private void ShowRecipeEntry(Rect entryRect, RecipeDef recipe)
+        {
+            Rect iconRect = new Rect(MYB_Data.GapX, entryRect.y, entryRect.height / 1.5f, entryRect.height / 1.5f);
+            Rect labelRect = new Rect(new Vector2(iconRect.xMax + MYB_Data.GapX, entryRect.y + 5f), entryRect.LeftHalf().size);
+            Rect clickableRect = entryRect.TopPart(0.75f);
 
-            listing.GapLine();
-            listing.End();
+            Widgets.ThingIcon(iconRect, recipe.ProducedThingDef);
+            Widgets.Label(labelRect, recipe.LabelCap);
 
-            Text.Font = defaultFont;
+            if (Mouse.IsOver(clickableRect))
+                Widgets.DrawHighlight(clickableRect);
+
+            if (Widgets.ButtonInvisible(clickableRect))
+            {
+                m_BulkRecipes.Add(new BulkRecipe(recipe));
+                base.Close();
+            }
         }
     }
 }

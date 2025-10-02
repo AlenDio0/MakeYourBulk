@@ -6,7 +6,7 @@
 
         public static void Trace(string message)
         {
-            if (MakeYourBulkMod.settings.VerboseLogging)
+            if (MakeYourBulkMod.s_Settings.VerboseLogging)
             {
                 Verse.Log.Message(Format(message));
             }

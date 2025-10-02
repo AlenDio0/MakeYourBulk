@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <LanguageData>
-	<DefaultListName>List Name</DefaultListName>
-	
 	<VerboseLogging_Label>Verbose Logging</VerboseLogging_Label>
 	<AddBulkUnfinishedThing_Label>Add BulkUnfinishedThing</AddBulkUnfinishedThing_Label>
 	<SameQuality_Label>Same Quality</SameQuality_Label>
@@ -12,7 +10,7 @@
 	
 	<AddRecipe_Button>Add Recipe</AddRecipe_Button>
 	<RemoveRecipe_Button>Remove Recipe</RemoveRecipe_Button>
-	<SaveLoad_Button>Save/Load List</SaveLoad_Button>
+	<SaveLoad_Button>Save / Load List</SaveLoad_Button>
 	<Reset_Button>Reset List</Reset_Button>
 	
 	<RecipesCount_Label>Recipes</RecipesCount_Label>
@@ -24,12 +22,12 @@
 	<AddList_Button>Add</AddList_Button>
 	<LoadListEmpty_Label>No saved list.</LoadListEmpty_Label>
 	<EmptyList_Message>Can't save an empty list!</EmptyList_Message>
-	<LoadListDialog_Message>Your current list is not saved! If you load this list, you will lose the current one.\nAre you sure you want to load '{0}' list?\n\nWARNING: This action is irreversible!</LoadListDialog_Message>
+	<LoadListDialog_Message>Your current list is not saved! If you load this list, you will lose the current one.\nAre you sure you want to load '{0}' list?\nWARNING: This action is irreversible!</LoadListDialog_Message>
 	<LoadListDialog_Title>Load '{0}' list</LoadListDialog_Title>
-	<DeleteListDialog_Message>Are you sure you want to delete '{0}' list?\n\nWARNING: This action is irreversible!</DeleteListDialog_Message>
+	<DeleteListDialog_Message>Are you sure you want to delete '{0}' list?\nWARNING: This action is irreversible!</DeleteListDialog_Message>
 	<DeleteListDialog_Title>Delete '{0}' list</DeleteListDialog_Title>
 	
-	<ResetDialog_Message>Are you sure you want to reset the list?\n\nWARNING: This action is irreversible!</ResetDialog_Message>
+	<ResetDialog_Message>Are you sure you want to reset the list?\nWARNING: This action is irreversible!</ResetDialog_Message>
 	
 	<SearchBox_Label>Search</SearchBox_Label>
 	

@@ -11,10 +11,13 @@ namespace MakeYourBulk
 
         public static string DefaultUnfinishedThing => "UnfinishedComponent";
 
-        public static string DefaultListName => "DefaultListName".Translate();
+        public static float GapX => 20f;
+        public static float GapY => 5f;
+        public static Vector2 ThirdSize(float width) => new Vector2((width - (GapX * 3f)) / 3f, 30f);
+        public static Rect LeftThird(Rect rect, float part = 0.99f) => new Rect(rect.x, rect.y, rect.width / 3f, rect.height).LeftPart(part).RightPart(part);
+        public static Rect MiddleThird(Rect rect, float part = 0.99f) => new Rect(rect.x + rect.width / 3f, rect.y, rect.width / 3f, rect.height).LeftPart(part).RightPart(part);
+        public static Rect RightThird(Rect rect, float part = 0.99f) => new Rect(rect.x + rect.width / 1.5f, rect.y, rect.width / 3f, rect.height).LeftPart(part).RightPart(part);
 
-        public static float DefaultSpace => 20f;
-        public static Vector2 ThirdSize(float width) => new Vector2((width - (DefaultSpace * 3f)) / 3f, 30f);
 
         public static string VerboseLogging_Label => "VerboseLogging_Label".Translate();
         public static string AddBulkUnfinishedThing_Label => "AddBulkUnfinishedThing_Label".Translate();
@@ -69,9 +72,13 @@ namespace MakeYourBulk
         public static bool Settings_DefaultAddUnfishedThing => false;
         public static bool Settings_DefaultSameQuality => false;
 
+        public static string Settings_HeightLevel => "HeightLevel";
+        public static float Settings_DefaultHeightLevel => 3f;
+
         public static string ExposableBackupList_ListName => "ListName";
         public static string ExposableBackupList_Recipes => "Recipes";
 
+        public static string BulkRecipe_CustomLabel => "CustomLabel";
         public static string BulkRecipe_RecipeDefName => "recipeDefName";
         public static string BulkRecipe_Products => "products";
         public static string BulkRecipe_WorkAmount => "workAmount";
@@ -80,5 +87,6 @@ namespace MakeYourBulk
         public static int BulkRecipe_DefaultProducts => 5;
         public static float BulkRecipe_DefaultWorkAmount => 1;
         public static float BulkRecipe_DefaultCost => 1;
+
     }
 }

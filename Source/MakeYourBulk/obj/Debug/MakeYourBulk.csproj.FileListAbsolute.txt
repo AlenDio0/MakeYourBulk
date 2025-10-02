@@ -12,3 +12,4 @@ C:\Program Files (x86)\Steam\steamapps\common\RimWorld\Mods\MakeYourBulk\Source\
 C:\Program Files (x86)\Steam\steamapps\common\RimWorld\Mods\MakeYourBulk\Source\MakeYourBulk\obj\Debug\MakeYourBulk.csproj.CoreCompileInputs.cache
 C:\Program Files (x86)\Steam\steamapps\common\RimWorld\Mods\MakeYourBulk\Source\MakeYourBulk\obj\Debug\MakeYourBulk.dll
 C:\Program Files (x86)\Steam\steamapps\common\RimWorld\Mods\MakeYourBulk\Source\MakeYourBulk\obj\Debug\MakeYour.7925230B.Up2Date
+C:\Program Files (x86)\Steam\steamapps\common\RimWorld\Mods\MakeYourBulk\1.6\Assemblies\MakeYourBulk.dll

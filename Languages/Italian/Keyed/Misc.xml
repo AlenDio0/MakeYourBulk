@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <LanguageData>
-	<DefaultListName>Nome della lista</DefaultListName>
-	
 	<VerboseLogging_Label>Verbose Logging</VerboseLogging_Label>
 	<AddBulkUnfinishedThing_Label>Aggiungi BulkUnfinishedThing</AddBulkUnfinishedThing_Label>
 	<SameQuality_Label>Stessa qualità</SameQuality_Label>
@@ -12,7 +10,7 @@
 	
 	<AddRecipe_Button>Aggiungi ricetta</AddRecipe_Button>
 	<RemoveRecipe_Button>Rimuovi ricetta</RemoveRecipe_Button>
-	<SaveLoad_Button>Salva/Carica lista</SaveLoad_Button>
+	<SaveLoad_Button>Salva / Carica lista</SaveLoad_Button>
 	<Reset_Button>Resetta lista</Reset_Button>
 	
 	<RecipesCount_Label>Ricette</RecipesCount_Label>
@@ -24,12 +22,12 @@
 	<AddList_Button>Aggiungi</AddList_Button>
 	<LoadListEmpty_Label>Nessuna lista salvata.</LoadListEmpty_Label>
 	<EmptyList_Message>Impossibile salvare una lista vuota!</EmptyList_Message>
-	<LoadListDialog_Message>La tua attuale lista non è salvata! Se caricherai questa lista, perderai quella attuale.\nSei sicuro di voler caricare la lista '{0}'?\n\nATTENZIONE: Questa azione è irreversibile!</LoadListDialog_Message>
+	<LoadListDialog_Message>La tua attuale lista non è salvata! Se caricherai questa lista, perderai quella attuale.\nSei sicuro di voler caricare la lista '{0}'?\nATTENZIONE: Questa azione è irreversibile!</LoadListDialog_Message>
 	<LoadListDialog_Title>Carica la lista '{0}'</LoadListDialog_Title>
-	<DeleteListDialog_Message>Sei sicuro di voler eliminare la lista '{0}'?\n\nATTENZIONE: Questa azione è irreversibile!</DeleteListDialog_Message>
+	<DeleteListDialog_Message>Sei sicuro di voler eliminare la lista '{0}'?\nATTENZIONE: Questa azione è irreversibile!</DeleteListDialog_Message>
 	<DeleteListDialog_Title>Elimina la lista '{0}'</DeleteListDialog_Title>
 	
-	<ResetDialog_Message>Sei sicuro di voler resettare la lista?\n\nATTENZIONE: Questa azione è irreversibile!</ResetDialog_Message>
+	<ResetDialog_Message>Sei sicuro di voler resettare la lista?\nATTENZIONE: Questa azione è irreversibile!</ResetDialog_Message>
 	
 	<SearchBox_Label>Cerca</SearchBox_Label>
 	
