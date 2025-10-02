@@ -1,6 +1,0 @@
-C:\Dev\C#\Rimworld Modding\Make Your Bulk\Assemblies\MakeYourBulk.dll
-C:\Dev\C#\Rimworld Modding\Make Your Bulk\Source\MakeYourBulk\obj\Release\MakeYourBulk.csproj.AssemblyReference.cache
-C:\Dev\C#\Rimworld Modding\Make Your Bulk\Source\MakeYourBulk\obj\Release\MakeYourBulk.csproj.CoreCompileInputs.cache
-C:\Dev\C#\Rimworld Modding\Make Your Bulk\Source\MakeYourBulk\obj\Release\MakeYourBulk.dll
-C:\Program Files (x86)\Steam\steamapps\common\RimWorld\Mods\Make Your Bulk\Assemblies\MakeYourBulk.dll
-C:\Dev\C#\Rimworld Modding\Make Your Bulk\Source\MakeYourBulk\obj\Release\MakeYour.7925230B.Up2Date

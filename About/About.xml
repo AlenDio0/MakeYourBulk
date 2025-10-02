@@ -24,14 +24,7 @@ Go to "Settings -> Mod Options -> Make Your Bulk".
 		<li>1.5</li>
 		<li>1.6</li>
 	</supportedVersions>
-	<modVersion IgnoreIfNoMatchingField="True">3.1.0</modVersion>
-	<modDependencies>
-		<li>
-			<packageId>brrainz.harmony</packageId>
-			<displayName>Harmony</displayName>
-			<steamWorkshopUrl>steam://url/CommunityFilePage/2009463077</steamWorkshopUrl>
-		</li>
-	</modDependencies>
+	<modVersion IgnoreIfNoMatchingField="True">4.0</modVersion>
 	<loadAfter>
 		<li>Ludeon.RimWorld</li>
 		<li>Ludeon.RimWorld.Royalty</li>

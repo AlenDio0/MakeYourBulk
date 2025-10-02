@@ -9,9 +9,7 @@ I recommend you, before going to the code, to at least read what I have to say:
 * The code follows this journey:
 
   1. After "LongEventHandler.ExecuteWhenFinished(...)", it goes into "MakeYourBulkSettings.AddToDatabase()".
-  2. In here the bulk recipe creates itself with "BulkRecipe.AdjustRecipeDef()" and with "BulkRecipe.CreateBulkRecipeDef(...)".
-  3. Then it controls if the recipe is good, and then it is added into "DefDatabase<RecipeDef>".
+  2. In here the bulk recipe creates itself with "BulkRecipe.CreateBulkRecipeDef(...)".
+  3. Then it controls if the recipe is good, and then it is added into "DefDatabase<RecipeDef>" and its "recipeUsers".
   4. After the game loads into the menu for the first time, the user can create other bulk recipes with the logic found in the class "Dialog_AddRecipe".
   5. If the user adds a new recipe, it also goes into "MakeYourBulkSettings.AddToDatabase()".
-
-* It is Harmony dependent.

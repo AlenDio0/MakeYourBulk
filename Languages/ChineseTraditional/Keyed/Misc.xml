@@ -18,6 +18,7 @@
 	<Save_Option>保存列表</Save_Option>
 	<Load_Option>加載列表</Load_Option>
 	<SaveList_Button>保存</SaveList_Button>
+	<OverwriteList_Button>覆蓋</OverwriteList_Button>
 	<LoadList_Button>加載</LoadList_Button>
 	<AddList_Button>添加</AddList_Button>
 	<LoadListEmpty_Label>沒有已保存的列表。</LoadListEmpty_Label>

@@ -1,3 +1,10 @@
+## 4.0 (02-10-2025)
+
+ADDED: Various new UI in the ModSettings.
+FIXED: Not fully scrolling lists in ModSettings. 
+FIXED: BulkRecipe Copying RecipeDef Bugs.
+REMOVED: Harmony as dependency.
+
 ## 3.0.0 (21-06-2025)
 
 UPDATE: RimWorld version 1.6.

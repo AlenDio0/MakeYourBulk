@@ -18,6 +18,7 @@
 	<Save_Option>Salva lista</Save_Option>
 	<Load_Option>Carica lista</Load_Option>
 	<SaveList_Button>Salva</SaveList_Button>
+	<OverwriteList_Button>Sovrascrivi</OverwriteList_Button>
 	<LoadList_Button>Carica</LoadList_Button>
 	<AddList_Button>Aggiungi</AddList_Button>
 	<LoadListEmpty_Label>Nessuna lista salvata.</LoadListEmpty_Label>

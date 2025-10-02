@@ -18,6 +18,7 @@
 	<Save_Option>Save List</Save_Option>
 	<Load_Option>Load List</Load_Option>
 	<SaveList_Button>Save</SaveList_Button>
+	<OverwriteList_Button>Overwrite</OverwriteList_Button>
 	<LoadList_Button>Load</LoadList_Button>
 	<AddList_Button>Add</AddList_Button>
 	<LoadListEmpty_Label>No saved list.</LoadListEmpty_Label>
