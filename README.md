@@ -6,10 +6,12 @@ I recommend you, before going to the code, to at least read what I have to say:
 
 * This mod has the purpose of creating a DIY bulk recipe, aka a recipe that already exists in the game or in a mod and changes its products, work amount, or cost. 
 
-* The code follows this journey:
+* The code that creates the new RecipeDef follows this journey:
+  1. [StaticConstructorOnStartup] MakeYourBulkMod.cs: static LoadBulkRecipeDefs()
+  2. Reads the settings.
+  3. Loops every Bulk Recipe created from the user.
+  4. In each loop, after it is asserted that it has a BaseRecipeDef and that it isn't already loaded, BulkRecipe.cs: BulkRecipe::GetBulkRecipeDef(...) gets called and creates the new RecipeDef.
+  5. Then after it creates the new RecipeDef (we still are in the loop) it gets added into DefDatabase<RecipeDef> and, if needed, into missings recipe users based on the BaseRecipeDef.
+  6. After the loop ended, DefDatabase<RecipeDef>.ResolveAllReferences() gets called.
 
-  1. After "LongEventHandler.ExecuteWhenFinished(...)", it goes into "MakeYourBulkSettings.AddToDatabase()".
-  2. In here the bulk recipe creates itself with "BulkRecipe.CreateBulkRecipeDef(...)".
-  3. Then it controls if the recipe is good, and then it is added into "DefDatabase<RecipeDef>" and its "recipeUsers".
-  4. After the game loads into the menu for the first time, the user can create other bulk recipes with the logic found in the class "Dialog_AddRecipe".
-  5. If the user adds a new recipe, it also goes into "MakeYourBulkSettings.AddToDatabase()".
+* If you have any problem or you can give me any help with something you think it doesn't quite "work as intended", don't hesitate to contact me. 
