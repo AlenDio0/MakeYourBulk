@@ -1,8 +1,0 @@
-C:\Program Files (x86)\Steam\steamapps\common\RimWorld\Mods\MakeYourBulk\1.6\Assemblies\MakeYourBulk.dll
-C:\Program Files (x86)\Steam\steamapps\common\RimWorld\Mods\MakeYourBulk\1.6\Source\MakeYourBulk16\obj\Debug\MakeYourBulk16.csproj.AssemblyReference.cache
-C:\Program Files (x86)\Steam\steamapps\common\RimWorld\Mods\MakeYourBulk\1.6\Source\MakeYourBulk16\obj\Debug\MakeYourBulk16.GeneratedMSBuildEditorConfig.editorconfig
-C:\Program Files (x86)\Steam\steamapps\common\RimWorld\Mods\MakeYourBulk\1.6\Source\MakeYourBulk16\obj\Debug\MakeYourBulk16.AssemblyInfoInputs.cache
-C:\Program Files (x86)\Steam\steamapps\common\RimWorld\Mods\MakeYourBulk\1.6\Source\MakeYourBulk16\obj\Debug\MakeYourBulk16.AssemblyInfo.cs
-C:\Program Files (x86)\Steam\steamapps\common\RimWorld\Mods\MakeYourBulk\1.6\Source\MakeYourBulk16\obj\Debug\MakeYourBulk16.csproj.CoreCompileInputs.cache
-C:\Program Files (x86)\Steam\steamapps\common\RimWorld\Mods\MakeYourBulk\1.6\Source\MakeYourBulk16\obj\Debug\MakeYourBulk.dll
-C:\Program Files (x86)\Steam\steamapps\common\RimWorld\Mods\MakeYourBulk\1.6\Source\MakeYourBulk16\obj\Debug\MakeYour.019A8FB5.Up2Date
