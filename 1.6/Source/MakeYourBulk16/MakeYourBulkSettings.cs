@@ -12,6 +12,7 @@ namespace MakeYourBulk
     public class MakeYourBulkSettings : ModSettings
     {
         private List<BulkRecipe> m_BulkRecipes = new List<BulkRecipe>();
+        public List<BulkRecipe> AllBulkRecipe => m_BulkRecipes;
         private List<ExposableBackupList> m_BackupLists = new List<ExposableBackupList>();
 
         private List<BulkRecipe> m_CachedShowableRecipes = null;
@@ -23,7 +24,9 @@ namespace MakeYourBulk
         private bool m_VerboseLogging = MYB_Data.Settings_DefaultVerboseLogging;
         public bool VerboseLogging => m_VerboseLogging;
         private bool m_AddUnfinishedThing = MYB_Data.Settings_DefaultAddUnfishedThing;
+        public bool AddUnfinishedThing => m_AddUnfinishedThing;
         private bool m_SameQuality = MYB_Data.Settings_DefaultSameQuality;
+        public bool SameQuality => m_SameQuality;
 
         private readonly BulkProperties m_Properties = new BulkProperties();
         private float m_HeightLevel = MYB_Data.Settings_DefaultHeightLevel;
@@ -325,52 +328,6 @@ namespace MakeYourBulk
                     return true;
 
             return false;
-        }
-
-        public void AddToDatabase()
-        {
-            List<BulkRecipe> removeRecipes = new List<BulkRecipe>();
-
-            foreach (BulkRecipe bulkRecipe in m_BulkRecipes)
-            {
-                if (bulkRecipe == null || bulkRecipe.GetBaseRecipe() == null)
-                {
-                    removeRecipes.Add(bulkRecipe);
-                    continue;
-                }
-
-                if (DefDatabase<RecipeDef>.GetNamedSilentFail(bulkRecipe.DefName) == null)
-                {
-                    RecipeDef bulkRecipeDef = bulkRecipe.GetBulkRecipeDef(m_AddUnfinishedThing, m_SameQuality);
-                    if (bulkRecipeDef == null)
-                    {
-                        MYB_Log.Error("Unexpected BulkRecipe is Null");
-                        continue;
-                    }
-
-                    MYB_Log.Trace($"Adding '{bulkRecipe.DefName}' into DefDatabase<RecipeDef>");
-                    DefDatabase<RecipeDef>.Add(bulkRecipeDef);
-
-                    var recipeUsers = DefDatabase<ThingDef>.AllDefs
-                        .Where(recipeUser => recipeUser.recipes != null && recipeUser.recipes.Contains(bulkRecipe.GetBaseRecipe()));
-                    if (!recipeUsers.EnumerableNullOrEmpty())
-                    {
-                        string users = "";
-                        foreach (string user in recipeUsers.Select(user => user.LabelCap))
-                            users += $"{user}, ";
-                        users = users.Substring(0, users.Length - 2);
-
-                        MYB_Log.Trace($"Adding '{bulkRecipe.DefName}' into: {users}");
-                        foreach (ThingDef recipeUser in recipeUsers)
-                            recipeUser.recipes.Add(bulkRecipeDef);
-                    }
-                }
-            }
-
-            foreach (BulkRecipe remove in removeRecipes)
-                m_BulkRecipes.Remove(remove);
-
-            MakeYourBulkMod.s_ModContent.ReloadContent(true);
         }
 
         public override void ExposeData()

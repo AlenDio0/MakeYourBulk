@@ -34,7 +34,7 @@ namespace MakeYourBulk
             m_CachedBaseRecipe = baseRecipe;
             m_BaseDefName = baseRecipe.defName;
 
-            _Properties = properties;
+            _Properties = properties.ShallowClone();
         }
 
         public static bool CanBeBulk(RecipeDef recipeDef) =>
@@ -111,6 +111,7 @@ namespace MakeYourBulk
             }
 
             bulkRecipeDef.ClearCachedData();
+            bulkRecipeDef.regenerateOnDifficultyChange = false;
             bulkRecipeDef.defName = DefName;
             bulkRecipeDef.label = RealLabel;
             bulkRecipeDef.modContentPack = MakeYourBulkMod.s_ModContent;
@@ -120,8 +121,14 @@ namespace MakeYourBulk
             bulkRecipeDef.products = CreateRecipeProducts(ProductThingDef, RealProducts, sameQuality).ToList();
             bulkRecipeDef.ingredients = CreateIngredients(GetBaseRecipe(), Product * Cost).ToList();
 
-            bulkRecipeDef.workAmount = bulkRecipeDef.WorkAmountForStuff(null) * WorkAmount * Product;
-            bulkRecipeDef.smeltingWorkAmount *= bulkRecipeDef.smeltingWorkAmount <= 0f ? 1f : WorkAmount * Product;
+            bulkRecipeDef.descriptionHyperlinks = GetBaseRecipe().descriptionHyperlinks?.ToList();
+            if (bulkRecipeDef.descriptionHyperlinks == null)
+                bulkRecipeDef.descriptionHyperlinks = new List<DefHyperlink>();
+            bulkRecipeDef.descriptionHyperlinks.Add(new DefHyperlink(GetBaseRecipe()));
+
+            float work = bulkRecipeDef.WorkAmountForStuff(null) * WorkAmount * Product;
+            bulkRecipeDef.workAmount = work;
+            bulkRecipeDef.smeltingWorkAmount = work;
 
             if (!bulkRecipeDef.UsesUnfinishedThing && addUnfinishedThing)
                 bulkRecipeDef.unfinishedThingDef = ThingDef.Named(MYB_Data.DefaultUnfinishedThing);

@@ -1,5 +1,4 @@
-﻿using Force.DeepCloner;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using Verse;
@@ -137,7 +136,7 @@ namespace MakeYourBulk
 
             if (Widgets.ButtonInvisible(clickableRect))
             {
-                m_BulkRecipes.Add(new BulkRecipe(recipe, m_Properties.ShallowClone()));
+                m_BulkRecipes.Add(new BulkRecipe(recipe, m_Properties));
                 base.Close();
             }
         }
