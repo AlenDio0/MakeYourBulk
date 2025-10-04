@@ -47,8 +47,9 @@ namespace MakeYourBulk
 
                 m_CachedShowableRecipes = m_BulkRecipes
                 .Where(recipe => recipe.GetBaseRecipe() != null)
-                .Where(recipe => m_SearchboxBuffer.NullOrEmpty() || recipe.RealLabel.ToLower().Contains(m_SearchboxBuffer.ToLower()))
-                .Where(recipe => m_SearchboxBuffer.NullOrEmpty() || recipe.BaseDefName.ToLower().Contains(m_SearchboxBuffer.ToLower()))
+                .Where(recipe => m_SearchboxBuffer.NullOrEmpty() ||
+                    recipe.RealLabel.ToLower().Contains(m_SearchboxBuffer.ToLower()) ||
+                    recipe.DefName.ToLower().Contains(m_SearchboxBuffer.ToLower()))
                 .ToList();
             }
 
