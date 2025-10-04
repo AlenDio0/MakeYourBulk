@@ -48,6 +48,7 @@ namespace MakeYourBulk
                 .Where(recipe => BulkRecipe.CanBeBulk(recipe))
                 .Where(recipe => !m_BulkRecipes.Select(bRecipe => bRecipe.DefName).Contains(recipe.defName))
                 .Where(recipe => m_SearchboxBuffer.NullOrEmpty() || recipe.label.ToLower().Contains(m_SearchboxBuffer.ToLower()))
+                .Where(recipe => m_SearchboxBuffer.NullOrEmpty() || recipe.defName.ToLower().Contains(m_SearchboxBuffer.ToLower()))
                 .ToList();
             }
 

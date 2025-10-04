@@ -131,7 +131,7 @@ namespace MakeYourBulk
             bulkRecipeDef.smeltingWorkAmount = work;
 
             if (!bulkRecipeDef.UsesUnfinishedThing && addUnfinishedThing)
-                bulkRecipeDef.unfinishedThingDef = ThingDef.Named(MYB_Data.DefaultUnfinishedThing);
+                bulkRecipeDef.unfinishedThingDef = ThingDef.Named(MYB_Data.UnfinishedBulkDefName);
 
             return bulkRecipeDef;
         }

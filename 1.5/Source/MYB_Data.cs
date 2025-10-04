@@ -9,7 +9,7 @@ namespace MakeYourBulk
         public static string ModName => "MakeYourBulk";
         public static string SpacedModName => "Make Your Bulk";
 
-        public static string DefaultUnfinishedThing => "UnfinishedComponent";
+        public static string UnfinishedBulkDefName => "UnfinishedBulk";
 
         public static float GapX => 20f;
         public static float GapY => 5f;

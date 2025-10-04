@@ -4,7 +4,7 @@
 		<TargetFramework>net472</TargetFramework>
 		<AssemblyName>MakeYourBulk</AssemblyName>
 		<RootNamespace>MakeYourBulk</RootNamespace>
-		<OutputPath>..\..\Assemblies\</OutputPath>
+		<OutputPath>..\Assemblies\</OutputPath>
 		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
 		<AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
 		<BaseOutputPath></BaseOutputPath>
@@ -22,8 +22,7 @@
 
 	<ItemGroup>
 	  <PackageReference Include="DeepCloner" Version="0.10.4" />
-	  <PackageReference Include="Krafs.Rimworld.Ref" Version="1.5.4409" />
-	  <PackageReference Include="Microsoft.Bcl.HashCode" Version="6.0.0" />
+	  <PackageReference Include="Krafs.Rimworld.Ref" Version="1.6.4566" />
 	</ItemGroup>
 
 </Project>
