@@ -14,6 +14,8 @@ namespace MakeYourBulk
         {
             s_Settings = GetSettings<MakeYourBulkSettings>();
             s_ModContent = content;
+
+            LongEventHandler.ExecuteWhenFinished(BulkRecipeGenerator.LoadBulkRecipeDefs);
         }
 
         public override void DoSettingsWindowContents(Rect inRect)
@@ -31,12 +33,9 @@ namespace MakeYourBulk
         public override string SettingsCategory() => MYB_Data.SpacedModName;
     }
 
-
-
-    [StaticConstructorOnStartup]
-    public static class LoadBulkRecipeDefs
+    public static class BulkRecipeGenerator
     {
-        static LoadBulkRecipeDefs()
+        public static void LoadBulkRecipeDefs()
         {
             var settings = LoadedModManager.GetMod<MakeYourBulkMod>().GetSettings<MakeYourBulkSettings>();
 
@@ -58,13 +57,13 @@ namespace MakeYourBulk
             DefDatabase<RecipeDef>.ResolveAllReferences();
         }
 
-        public static void AddRecipeIntoDefDatabase(RecipeDef recipe)
+        private static void AddRecipeIntoDefDatabase(RecipeDef recipe)
         {
             MYB_Log.Trace($"Adding '{recipe.defName}' into DefDatabase<RecipeDef>");
             DefDatabase<RecipeDef>.Add(recipe);
         }
 
-        public static void AddRecipeIntoMissingRecipeUsers(RecipeDef recipe, RecipeDef baseRecipe)
+        private static void AddRecipeIntoMissingRecipeUsers(RecipeDef recipe, RecipeDef baseRecipe)
         {
             var recipeUsers = DefDatabase<ThingDef>.AllDefs
                 .Where(recipeUser => recipeUser.recipes != null && recipeUser.recipes.Contains(baseRecipe));

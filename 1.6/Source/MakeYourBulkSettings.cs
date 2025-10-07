@@ -16,7 +16,7 @@ namespace MakeYourBulk
         private List<ExposableBackupList> m_BackupLists = new List<ExposableBackupList>();
 
         private List<BulkRecipe> m_CachedShowableRecipes = null;
-        private string m_LastSearchboxBuffer;
+        private string m_LastSearchboxBuffer = "";
         private int m_LastDefsCount = 0;
 
         private string m_SearchboxBuffer = "";

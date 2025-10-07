@@ -11,7 +11,7 @@ namespace MakeYourBulk
         private readonly BulkProperties m_Properties;
 
         private List<RecipeDef> m_CachedShowableRecipes = null;
-        private string m_LastSearchboxBuffer;
+        private string m_LastSearchboxBuffer = "";
         private int m_LastDefsCount = 0;
 
         private string m_SearchboxBuffer = "";
@@ -19,7 +19,7 @@ namespace MakeYourBulk
         private Vector2 m_ScrollPosition = Vector2.zero;
         private float m_ScrollViewHeight = 0f;
 
-        public Dialog_AddRecipe(in List<BulkRecipe> bulkRecipes, BulkProperties properties)
+        public Dialog_AddRecipe(List<BulkRecipe> bulkRecipes, BulkProperties properties)
         {
             forcePause = true;
             doCloseButton = true;
