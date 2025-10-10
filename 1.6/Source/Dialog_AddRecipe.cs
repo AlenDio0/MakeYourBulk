@@ -8,7 +8,10 @@ namespace MakeYourBulk
     public class Dialog_AddRecipe : Window
     {
         private readonly List<BulkRecipe> m_BulkRecipes;
-        private readonly BulkProperties m_Properties;
+
+        private readonly int m_Product;
+        private readonly float m_WorkAmount;
+        private readonly float m_Cost;
 
         private List<RecipeDef> m_CachedShowableRecipes = null;
         private string m_LastSearchboxBuffer = "";
@@ -19,7 +22,7 @@ namespace MakeYourBulk
         private Vector2 m_ScrollPosition = Vector2.zero;
         private float m_ScrollViewHeight = 0f;
 
-        public Dialog_AddRecipe(List<BulkRecipe> bulkRecipes, BulkProperties properties)
+        public Dialog_AddRecipe(List<BulkRecipe> bulkRecipes, int product, float workAmount, float cost)
         {
             forcePause = true;
             doCloseButton = true;
@@ -29,7 +32,10 @@ namespace MakeYourBulk
             absorbInputAroundWindow = true;
 
             m_BulkRecipes = bulkRecipes;
-            m_Properties = properties;
+
+            m_Product = product;
+            m_WorkAmount = workAmount;
+            m_Cost = cost;
         }
 
         public override Vector2 InitialSize => new Vector2(600f, 800f);
@@ -138,7 +144,7 @@ namespace MakeYourBulk
 
             if (Widgets.ButtonInvisible(clickableRect))
             {
-                m_BulkRecipes.Add(new BulkRecipe(recipe, m_Properties));
+                m_BulkRecipes.Add(new BulkRecipe(recipe, m_Product, m_WorkAmount, m_Cost));
                 base.Close();
             }
         }

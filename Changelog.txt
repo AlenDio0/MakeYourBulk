@@ -1,3 +1,10 @@
+## 4.3 (10-10-2025)
+
+FIXED: Real-Time changing in ModSettings BulkRecipe entry of work amount and cost.
+FIXED: ModSettings BulkRecipe entry work amount and cost tooltips.
+MOVED: BulkRecipe functions that create the BulkRecipe RecipeDef into BulkRecipeGenerator.
+REMOVED: BulkProperties.cs (Integrated into BulkRecipe).
+
 ## 4.2 (07-10-2025)
 
 FIXED: Recipes not showing in the vanilla workstation.

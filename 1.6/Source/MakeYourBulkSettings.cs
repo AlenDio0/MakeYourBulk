@@ -13,6 +13,7 @@ namespace MakeYourBulk
     {
         private List<BulkRecipe> m_BulkRecipes = new List<BulkRecipe>();
         public List<BulkRecipe> AllBulkRecipe => m_BulkRecipes;
+
         private List<ExposableBackupList> m_BackupLists = new List<ExposableBackupList>();
 
         private List<BulkRecipe> m_CachedShowableRecipes = null;
@@ -23,14 +24,20 @@ namespace MakeYourBulk
 
         private bool m_VerboseLogging = MYB_Data.Settings_DefaultVerboseLogging;
         public bool VerboseLogging => m_VerboseLogging;
+
         private bool m_AddUnfinishedThing = MYB_Data.Settings_DefaultAddUnfishedThing;
         public bool AddUnfinishedThing => m_AddUnfinishedThing;
+
         private bool m_SameQuality = MYB_Data.Settings_DefaultSameQuality;
         public bool SameQuality => m_SameQuality;
 
-        private readonly BulkProperties m_Properties = new BulkProperties();
-        private float m_HeightLevel = MYB_Data.Settings_DefaultHeightLevel;
+        private int m_DefaultProduct;
+        private float m_DefaultWorkAmount;
+        private float m_DefaultCost;
 
+        private string m_DefaultProductBuffer;
+
+        private float m_HeightLevel = MYB_Data.Settings_DefaultHeightLevel;
 
         private Vector2 m_ScrollPosition = Vector2.zero;
         private float m_ScrollViewHeight = 0f;
@@ -46,7 +53,7 @@ namespace MakeYourBulk
                 m_LastSearchboxBuffer = m_SearchboxBuffer;
 
                 m_CachedShowableRecipes = m_BulkRecipes
-                .Where(recipe => recipe.GetBaseRecipe() != null)
+                .Where(recipe => recipe.BaseRecipeDef != null)
                 .Where(recipe => m_SearchboxBuffer.NullOrEmpty() ||
                     recipe.RealLabel.ToLower().Contains(m_SearchboxBuffer.ToLower()) ||
                     recipe.DefName.ToLower().Contains(m_SearchboxBuffer.ToLower()))
@@ -108,7 +115,7 @@ namespace MakeYourBulk
             if (Widgets.ButtonText(addRect, MYB_Data.AddRecipe_Button))
             {
                 SoundDefOf.Click.PlayOneShotOnCamera();
-                Find.WindowStack.Add(new Dialog_AddRecipe(m_BulkRecipes, m_Properties));
+                Find.WindowStack.Add(new Dialog_AddRecipe(m_BulkRecipes, m_DefaultProduct, m_DefaultWorkAmount, m_DefaultCost));
             }
 
             if (Widgets.ButtonText(saveloadRect, MYB_Data.SaveLoad_Button))
@@ -186,16 +193,16 @@ namespace MakeYourBulk
             Widgets.Label(labelRect, "Default Properties:");
 
             Widgets.TextFieldNumericLabeled(productRect, $"{MYB_Data.RecipeProducts_Label}   ",
-                ref m_Properties._Product, ref m_Properties._ProductBuffer, 1, 1E+05f);
+                ref m_DefaultProduct, ref m_DefaultProductBuffer, 1, 1E+05f);
 
             FloatRange range = new FloatRange(0.1f, 2f);
             float roundTo = 0.05f;
 
-            string workAmountLabel = $"{MYB_Data.RecipeWorkAmount_Label} {m_Properties._WorkAmount.ToStringPercent()}";
-            Widgets.HorizontalSlider(workRect, ref m_Properties._WorkAmount, range, workAmountLabel, roundTo);
+            string workAmountLabel = $"{MYB_Data.RecipeWorkAmount_Label} {m_DefaultWorkAmount.ToStringPercent()}";
+            Widgets.HorizontalSlider(workRect, ref m_DefaultWorkAmount, range, workAmountLabel, roundTo);
 
-            string costLabel = $"{MYB_Data.RecipeCost_Label} {m_Properties._Cost.ToStringPercent()}";
-            Widgets.HorizontalSlider(costRect, ref m_Properties._Cost, range, costLabel, roundTo);
+            string costLabel = $"{MYB_Data.RecipeCost_Label} {m_DefaultCost.ToStringPercent()}";
+            Widgets.HorizontalSlider(costRect, ref m_DefaultCost, range, costLabel, roundTo);
         }
 
         private void ShowSearchboxAndSize(Rect rect)
@@ -249,8 +256,6 @@ namespace MakeYourBulk
 
         private void ShowRecipeEntry(Rect entryRect, BulkRecipe recipe, int index)
         {
-            RecipeDef recipeDef = recipe.GetBulkRecipeDef(m_AddUnfinishedThing, m_SameQuality);
-
             float iconSize = entryRect.height / 2f;
             Rect indexRect = new Rect(0f, entryRect.y, entryRect.width, entryRect.height);
             Rect iconRect = new Rect(entryRect.x, entryRect.y, iconSize, iconSize);
@@ -292,26 +297,50 @@ namespace MakeYourBulk
                 m_BulkRecipes.Add(recipe.ShallowClone());
             }
 
-            Widgets.TextFieldNumericLabeled(productRect, $"{MYB_Data.RecipeProducts_Label}   ",
-                ref recipe._Properties._Product, ref recipe._Properties._ProductBuffer, 1, 1E+05f);
+            ShowRecipeEntryProduct(productRect, ref recipe);
 
             FloatRange range = new FloatRange(0.1f, 2f);
             float roundTo = 0.05f;
 
-            string workAmountLabel = $"{MYB_Data.RecipeWorkAmount_Label} {recipe.WorkAmountPercent}";
-            Widgets.HorizontalSlider(workRect, ref recipe._Properties._WorkAmount, range, workAmountLabel, roundTo);
-            if (Mouse.IsOver(workRect))
-                TooltipHandler.TipRegion(workRect, $"{MYB_Data.RecipeWorkAmount_Label}: {recipeDef.workAmount}");
+            ShowRecipeEntryWorkAmount(workRect, ref recipe, range, roundTo);
+            ShowRecipeEntryCost(costRect, ref recipe, range, roundTo);
+        }
 
-            string costLabel = $"{MYB_Data.RecipeCost_Label} {recipe.CostPercent}";
-            Widgets.HorizontalSlider(costRect, ref recipe._Properties._Cost, range, costLabel, roundTo);
-            if (Mouse.IsOver(costRect))
+        private void ShowRecipeEntryProduct(Rect productRect, ref BulkRecipe recipe)
+        {
+            Widgets.TextFieldNumericLabeled(productRect, $"{MYB_Data.RecipeProducts_Label}   ",
+                ref recipe._Product, ref recipe._ProductBuffer, 1, 1E+05f);
+        }
+
+        private void ShowRecipeEntryWorkAmount(Rect workRect, ref BulkRecipe recipe, FloatRange range, float roundTo)
+        {
+            string workAmountLabel = $"{MYB_Data.RecipeWorkAmount_Label} {recipe._WorkAmount.ToStringPercent()}";
+            Widgets.HorizontalSlider(workRect, ref recipe._WorkAmount, range, workAmountLabel, roundTo);
+
+            Rect tooltipRect = new Rect(workRect.ExpandedBy(15f).position, new Vector2(workRect.width, workRect.height * 2f));
+            if (Mouse.IsOver(tooltipRect) && BulkRecipeGenerator.LoadedBulkRecipeDefs.TryGetValue(recipe.DefName, out RecipeDef recipeDef))
             {
-                string costTooltip = $"{MYB_Data.RecipeCost_Label}: ";
+                BulkRecipeGenerator.SetBulkWorkAmount(recipeDef, recipe.BaseRecipeDef, recipe.TotalWorkAmountFactor);
+                string workAmount = GenText.ToStringWorkAmount(recipeDef.workAmount);
+                TooltipHandler.TipRegion(tooltipRect, $"{MYB_Data.RecipeWorkAmount_Label}: {workAmount}");
+            }
+        }
+
+        private void ShowRecipeEntryCost(Rect costRect, ref BulkRecipe recipe, FloatRange range, float roundTo)
+        {
+            string costLabel = $"{MYB_Data.RecipeCost_Label} {recipe._Cost.ToStringPercent()}";
+            Widgets.HorizontalSlider(costRect, ref recipe._Cost, range, costLabel, roundTo);
+
+            Rect tooltipRect = new Rect(costRect.ExpandedBy(15f).position, new Vector2(costRect.width, costRect.height * 2f));
+            if (Mouse.IsOver(tooltipRect) && BulkRecipeGenerator.LoadedBulkRecipeDefs.TryGetValue(recipe.DefName, out RecipeDef recipeDef))
+            {
+                BulkRecipeGenerator.SetBulkIngredients(recipeDef, recipe.BaseRecipeDef, recipe.TotalCostFactor);
+                string ingredients = "";
                 recipeDef.ingredients.Select(ingredient => ingredient.Summary)
-                    .ToList().ForEach(ingredient => costTooltip += $"{ingredient}, ");
-                costTooltip = costTooltip.Substring(0, costTooltip.Length - 2);
-                TooltipHandler.TipRegion(costRect, costTooltip);
+                    .ToList().ForEach(ingredient => ingredients += $"{ingredient}, ");
+                ingredients = ingredients.Substring(0, ingredients.Length - 2);
+
+                TooltipHandler.TipRegion(tooltipRect, $"{MYB_Data.RecipeCost_Label}: {ingredients}");
             }
         }
 
@@ -341,9 +370,9 @@ namespace MakeYourBulk
             Scribe_Values.Look(ref m_AddUnfinishedThing, MYB_Data.Settings_AddUnfinishedThing, MYB_Data.Settings_DefaultAddUnfishedThing);
             Scribe_Values.Look(ref m_SameQuality, MYB_Data.Settings_SameQuality, MYB_Data.Settings_DefaultSameQuality);
 
-            Scribe_Values.Look(ref m_Properties._Product, MYB_Data.BulkProperties_Products, MYB_Data.BulkProperties_DefaultProducts);
-            Scribe_Values.Look(ref m_Properties._WorkAmount, MYB_Data.BulkProperties_WorkAmount, MYB_Data.BulkProperties_DefaultWorkAmount);
-            Scribe_Values.Look(ref m_Properties._Cost, MYB_Data.BulkProperties_Cost, MYB_Data.BulkProperties_DefaultCost);
+            Scribe_Values.Look(ref m_DefaultProduct, MYB_Data.BulkProperties_Products, MYB_Data.BulkProperties_DefaultProducts);
+            Scribe_Values.Look(ref m_DefaultWorkAmount, MYB_Data.BulkProperties_WorkAmount, MYB_Data.BulkProperties_DefaultWorkAmount);
+            Scribe_Values.Look(ref m_DefaultCost, MYB_Data.BulkProperties_Cost, MYB_Data.BulkProperties_DefaultCost);
 
             Scribe_Values.Look(ref m_HeightLevel, MYB_Data.Settings_HeightLevel, MYB_Data.Settings_DefaultHeightLevel);
 
