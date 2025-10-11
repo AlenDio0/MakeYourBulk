@@ -13,11 +13,10 @@ namespace MakeYourBulk
         private readonly float m_WorkAmount;
         private readonly float m_Cost;
 
-        private List<RecipeDef> m_CachedShowableRecipes = null;
-        private string m_LastSearchboxBuffer = "";
+        private IEnumerable<RecipeDef> m_CachedShowableRecipes = null;
         private int m_LastDefsCount = 0;
 
-        private string m_SearchboxBuffer = "";
+        private readonly Searchbox m_Searchbox = new Searchbox();
 
         private Vector2 m_ScrollPosition = Vector2.zero;
         private float m_ScrollViewHeight = 0f;
@@ -40,23 +39,18 @@ namespace MakeYourBulk
 
         public override Vector2 InitialSize => new Vector2(600f, 800f);
 
-        private List<RecipeDef> GetShowableRecipeList()
+        private IEnumerable<RecipeDef> GetShowableRecipeList()
         {
             bool database = DefDatabase<RecipeDef>.AllDefsListForReading.Count != m_LastDefsCount;
-            bool searchbox = m_SearchboxBuffer != m_LastSearchboxBuffer;
 
-            if (m_CachedShowableRecipes == null || database || searchbox)
+            if (m_CachedShowableRecipes == null || m_Searchbox.LastCheckChanged || database)
             {
-                m_LastSearchboxBuffer = m_SearchboxBuffer;
                 m_LastDefsCount = DefDatabase<RecipeDef>.AllDefsListForReading.Count;
 
                 m_CachedShowableRecipes = DefDatabase<RecipeDef>.AllDefs
                 .Where(recipe => BulkRecipe.CanBeBulk(recipe))
-                .Where(recipe => !m_BulkRecipes.Select(bRecipe => bRecipe.DefName).Contains(recipe.defName))
-                .Where(recipe => m_SearchboxBuffer.NullOrEmpty() ||
-                    recipe.label.ToLower().Contains(m_SearchboxBuffer.ToLower()) ||
-                    recipe.defName.ToLower().Contains(m_SearchboxBuffer.ToLower()))
-                .ToList();
+                .Where(recipe => !BulkRecipeGenerator.LoadedBulkRecipeDefs.ContainsKey(recipe.defName))
+                .Where(recipe => m_Searchbox.IsContained(recipe.label) || m_Searchbox.IsContained(recipe.defName));
             }
 
             return m_CachedShowableRecipes;
@@ -91,19 +85,17 @@ namespace MakeYourBulk
             Rect searchboxRect = searchRect.LeftPart(0.65f);
             Rect searchLabelRect = searchRect.RightPart(0.325f).BottomPart(0.8f);
 
-            m_SearchboxBuffer = Widgets.TextField(searchboxRect, m_SearchboxBuffer);
-
-            int recipeCount = GetShowableRecipeList().Count;
+            int recipeCount = GetShowableRecipeList().Count();
             string recipeCountStr =
                 recipeCount <= 10000 ? recipeCount.ToString() :
-                $"{recipeCount / 1000}k";
+                $"{recipeCount / 1000f}k";
 
-            Widgets.Label(searchLabelRect, $"{MYB_Data.RecipesCount_Label}: {recipeCountStr}");
+            m_Searchbox.Show(searchboxRect, searchLabelRect, $"{MYB_Data.RecipesCount_Label}: {recipeCountStr}");
         }
 
         private void ShowRecipeList(Rect recipeRect)
         {
-            List<RecipeDef> recipes = GetShowableRecipeList();
+            IEnumerable<RecipeDef> recipes = GetShowableRecipeList();
 
             Rect outRect = new Rect(Vector2.zero, recipeRect.size);
             Rect viewRect = new Rect(Vector2.zero, new Vector2(recipeRect.width - MYB_Data.GapX, m_ScrollViewHeight));

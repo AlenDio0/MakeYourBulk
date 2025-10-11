@@ -12,7 +12,7 @@ namespace MakeYourBulk
         private readonly List<ExposableBackupList> m_BackupLists;
         private readonly ExposableBackupList m_Backup = null;
 
-        private string m_SearchboxBuffer = "";
+        private readonly Searchbox m_Searchbox = new Searchbox();
 
         private Vector2 m_ScrollPosition = Vector2.zero;
         private float m_ScrollViewHeight = 0f;
@@ -32,12 +32,8 @@ namespace MakeYourBulk
 
         public override Vector2 InitialSize => new Vector2(550f, 625f);
 
-        private List<ExposableBackupList> GetShowableBackupLists()
-        {
-            return m_BackupLists
-                .Where(backup => m_SearchboxBuffer.NullOrEmpty() || backup._ListName.ToLower().Contains(m_SearchboxBuffer.ToLower()))
-                .ToList();
-        }
+        private IEnumerable<ExposableBackupList> GetShowableBackupLists() =>
+            m_BackupLists.Where(backup => m_Searchbox.IsContained(backup._ListName));
 
         public override void DoWindowContents(Rect canva)
         {
@@ -58,7 +54,7 @@ namespace MakeYourBulk
             Rect searchboxRect = searchRect.RightPart(0.9f).LeftPart(0.95f);
             Rect iconRect = searchRect.LeftPartPixels(32f);
 
-            m_SearchboxBuffer = Widgets.TextField(searchboxRect, m_SearchboxBuffer);
+            m_Searchbox.Show(searchboxRect);
             Widgets.ButtonImage(iconRect, TexButton.Search, Color.white, Color.white, false);
         }
 
@@ -159,7 +155,7 @@ namespace MakeYourBulk
         private readonly List<ExposableBackupList> m_BackupLists;
         private readonly List<BulkRecipe> m_BulkRecipes;
 
-        private string m_SearchboxBuffer = "";
+        private readonly Searchbox m_Searchbox = new Searchbox();
 
         private Vector2 m_ScrollPosition = Vector2.zero;
         private float m_ScrollViewHeight = 0f;
@@ -179,12 +175,8 @@ namespace MakeYourBulk
 
         public override Vector2 InitialSize => new Vector2(550f, 625f);
 
-        private List<ExposableBackupList> GetShowableBackupLists()
-        {
-            return m_BackupLists
-                .Where(backup => m_SearchboxBuffer.NullOrEmpty() || backup._ListName.ToLower().Contains(m_SearchboxBuffer.ToLower()))
-                .ToList();
-        }
+        private IEnumerable<ExposableBackupList> GetShowableBackupLists() =>
+            m_BackupLists.Where(backup => m_Searchbox.IsContained(backup._ListName));
 
         public override void DoWindowContents(Rect canva)
         {
@@ -200,7 +192,7 @@ namespace MakeYourBulk
             Rect searchboxRect = searchRect.RightPart(0.9f).LeftPart(0.95f);
             Rect iconRect = searchRect.LeftPartPixels(32f);
 
-            m_SearchboxBuffer = Widgets.TextField(searchboxRect, m_SearchboxBuffer);
+            m_Searchbox.Show(searchboxRect);
             Widgets.ButtonImage(iconRect, TexButton.Search, Color.white, Color.white, false);
         }
 

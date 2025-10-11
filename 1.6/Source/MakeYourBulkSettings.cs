@@ -16,11 +16,10 @@ namespace MakeYourBulk
 
         private List<ExposableBackupList> m_BackupLists = new List<ExposableBackupList>();
 
-        private List<BulkRecipe> m_CachedShowableRecipes = null;
-        private string m_LastSearchboxBuffer = "";
+        private IEnumerable<BulkRecipe> m_CachedShowableRecipes = null;
         private int m_LastDefsCount = 0;
 
-        private string m_SearchboxBuffer = "";
+        private readonly Searchbox m_Searchbox = new Searchbox();
 
         private bool m_VerboseLogging = MYB_Data.Settings_DefaultVerboseLogging;
         public bool VerboseLogging => m_VerboseLogging;
@@ -42,22 +41,17 @@ namespace MakeYourBulk
         private Vector2 m_ScrollPosition = Vector2.zero;
         private float m_ScrollViewHeight = 0f;
 
-        private List<BulkRecipe> GetShowableBulkRecipes()
+        private IEnumerable<BulkRecipe> GetShowableBulkRecipes()
         {
             bool added = m_BulkRecipes.Count != m_LastDefsCount;
-            bool search = m_SearchboxBuffer != m_LastSearchboxBuffer;
 
-            if (m_CachedShowableRecipes.NullOrEmpty() || added || search)
+            if (m_CachedShowableRecipes.EnumerableNullOrEmpty() || m_Searchbox.LastCheckChanged || added)
             {
                 m_LastDefsCount = m_BulkRecipes.Count;
-                m_LastSearchboxBuffer = m_SearchboxBuffer;
 
                 m_CachedShowableRecipes = m_BulkRecipes
                 .Where(recipe => recipe.BaseRecipeDef != null)
-                .Where(recipe => m_SearchboxBuffer.NullOrEmpty() ||
-                    recipe.RealLabel.ToLower().Contains(m_SearchboxBuffer.ToLower()) ||
-                    recipe.DefName.ToLower().Contains(m_SearchboxBuffer.ToLower()))
-                .ToList();
+                .Where(recipe => m_Searchbox.IsContained(recipe.RealLabel) || m_Searchbox.IsContained(recipe.DefName));
             }
 
             return m_CachedShowableRecipes;
@@ -212,16 +206,15 @@ namespace MakeYourBulk
 
             Rect sizeRect = MYB_Data.RightThird(rect, 0.9f);
 
-            m_SearchboxBuffer = Widgets.TextField(searchBoxRect, m_SearchboxBuffer);
-            Widgets.Label(searchLabelRect, $"{MYB_Data.SearchBox_Label} ({GetShowableBulkRecipes().Count}/{m_BulkRecipes.Count})");
+            m_Searchbox.Show(searchBoxRect, searchLabelRect, $"{MYB_Data.SearchBox_Label} ({GetShowableBulkRecipes().Count()}/{m_BulkRecipes.Count})");
 
             Widgets.HorizontalSlider(sizeRect, ref m_HeightLevel, new FloatRange(1, 10), $"Height: {m_HeightLevel}", 1);
         }
 
         private void ShowRecipeList(Rect recipeRect)
         {
-            List<BulkRecipe> showableRecipes = GetShowableBulkRecipes();
-            if (showableRecipes.NullOrEmpty())
+            IEnumerable<BulkRecipe> showableRecipes = GetShowableBulkRecipes();
+            if (showableRecipes.EnumerableNullOrEmpty())
                 m_ScrollViewHeight = 0f;
 
             Rect outRect = new Rect(Vector2.zero, recipeRect.size);
