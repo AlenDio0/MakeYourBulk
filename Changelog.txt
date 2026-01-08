@@ -1,3 +1,9 @@
+## 5.0 (08-01-2026)
+
+FIXED: Searchbox not working when empty.
+FIXED: Log error on removing Bulk Recipe.
+UPDATE: Real-time change into the Bulk Recipe list (suggestion from Chronomancer).
+
 ## 4.3 (10-10-2025)
 
 FIXED: Real-Time changing in ModSettings BulkRecipe entry of work amount and cost.
