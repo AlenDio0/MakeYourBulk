@@ -14,6 +14,8 @@ namespace MakeYourBulk
         private List<BulkRecipe> m_BulkRecipes = new List<BulkRecipe>();
         public List<BulkRecipe> AllBulkRecipe => m_BulkRecipes;
 
+        private BulkRecipe m_ToRemoveRecipe = null;
+
         private List<ExposableBackupList> m_BackupLists = new List<ExposableBackupList>();
 
         private IEnumerable<BulkRecipe> m_CachedShowableRecipes = null;
@@ -245,6 +247,12 @@ namespace MakeYourBulk
 
             Widgets.EndScrollView();
             GUI.EndGroup();
+
+            if (m_ToRemoveRecipe != null)
+            {
+                m_BulkRecipes.Remove(m_ToRemoveRecipe);
+                m_ToRemoveRecipe = null;
+            }
         }
 
         private void ShowRecipeEntry(Rect entryRect, BulkRecipe recipe, int index)
@@ -282,7 +290,7 @@ namespace MakeYourBulk
             if (Widgets.ButtonImage(removeRect, TexButton.Delete))
             {
                 SoundDefOf.Click.PlayOneShotOnCamera();
-                m_BulkRecipes.Remove(recipe);
+                m_ToRemoveRecipe = recipe;
             }
             if (Widgets.ButtonImage(copyRect, TexButton.Copy))
             {

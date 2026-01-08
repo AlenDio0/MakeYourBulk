@@ -7,7 +7,7 @@ namespace MakeYourBulk
     {
         private string m_Buffer = "";
 
-        private bool m_Changed = false;
+        private bool m_Changed = true;
         public bool LastCheckChanged
         {
             get

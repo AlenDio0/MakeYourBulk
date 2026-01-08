@@ -43,7 +43,7 @@ namespace MakeYourBulk
         {
             bool database = DefDatabase<RecipeDef>.AllDefsListForReading.Count != m_LastDefsCount;
 
-            if (m_CachedShowableRecipes == null || m_Searchbox.LastCheckChanged || database)
+            if (m_CachedShowableRecipes.EnumerableNullOrEmpty() || m_Searchbox.LastCheckChanged || database)
             {
                 m_LastDefsCount = DefDatabase<RecipeDef>.AllDefsListForReading.Count;
 

@@ -37,6 +37,8 @@ namespace MakeYourBulk
         {
             base.WriteSettings();
 
+            BulkRecipeGenerator.LoadBulkRecipeDefs();
+
             foreach (BulkRecipe bulkRecipe in s_Settings.AllBulkRecipe)
             {
                 if (bulkRecipe?.BaseRecipeDef == null)
