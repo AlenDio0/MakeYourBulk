@@ -1,5 +1,4 @@
-﻿using Force.DeepCloner;
-using RimWorld;
+﻿using RimWorld;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -247,9 +246,12 @@ namespace MakeYourBulk
                 int endRecipes = startRecipe + (int)Math.Ceiling(outRect.height / entryHeight) + 1;
 
                 float currentHeight = 0f;
-                int i = 0;
-                foreach (BulkRecipe recipe in GetShowableBulkRecipes())
+
+                IEnumerable<BulkRecipe> bulkRecipes = GetShowableBulkRecipes();
+                for (int i = 0; i < bulkRecipes.Count(); i++)
                 {
+                    BulkRecipe recipe = bulkRecipes.ElementAt(i);
+
                     Rect entryRect = new(MYB_Data.GapX, currentHeight + MYB_Data.GapY, viewRect.width - MYB_Data.GapX, entryHeight);
 
                     Widgets.DrawLineHorizontal(0f, currentHeight, viewRect.width, Widgets.SeparatorLineColor);
@@ -258,7 +260,6 @@ namespace MakeYourBulk
                         ShowRecipeEntry(entryRect, recipe, i);
 
                     currentHeight += entryHeight;
-                    i++;
                 }
                 m_ScrollViewHeight = currentHeight;
             }

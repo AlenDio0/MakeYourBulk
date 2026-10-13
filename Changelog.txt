@@ -1,3 +1,9 @@
+## 5.1 (13-10-2026)
+
+UPDATE: RimWorld version 1.7.
+FIXED: Soft-locking the game into the Mod Options.
+REMOVED: Force.DeepCloner library dependency.
+
 ## 5.0 (08-01-2026)
 
 FIXED: Searchbox not working when empty.
