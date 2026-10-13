@@ -31,9 +31,9 @@ namespace MakeYourBulk
         private bool m_SameQuality = MYB_Data.Settings_DefaultSameQuality;
         public bool SameQuality => m_SameQuality;
 
-        private int m_DefaultProduct;
-        private float m_DefaultWorkAmount;
-        private float m_DefaultCost;
+        private int m_DefaultProduct = MYB_Data.BulkProperties_DefaultProducts;
+        private float m_DefaultWorkAmount = MYB_Data.BulkProperties_DefaultWorkAmount;
+        private float m_DefaultCost = MYB_Data.BulkProperties_DefaultCost;
 
         private string m_DefaultProductBuffer;
 

@@ -88,8 +88,8 @@ namespace MakeYourBulk
         public static string BulkProperties_Cost => "cost";
 
         public static int BulkProperties_DefaultProducts => 5;
-        public static float BulkProperties_DefaultWorkAmount => 1;
-        public static float BulkProperties_DefaultCost => 1;
+        public static float BulkProperties_DefaultWorkAmount => 1f;
+        public static float BulkProperties_DefaultCost => 1f;
 
     }
 }
