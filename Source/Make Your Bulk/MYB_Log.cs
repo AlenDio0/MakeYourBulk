@@ -1,4 +1,8 @@
-﻿namespace MakeYourBulk
+﻿using System;
+using System.Runtime.CompilerServices;
+using Verse;
+
+namespace MakeYourBulk
 {
     public static class MYB_Log
     {
@@ -11,5 +15,8 @@
         }
         public static void Warn(string message) => Verse.Log.Warning(Format(message));
         public static void Error(string message) => Verse.Log.Error(Format(message));
+
+        public static void Exception(Exception exception, [CallerMemberName] string functionName = "") =>
+            Error($"Exception catched into {functionName}() - {exception}");
     }
 }

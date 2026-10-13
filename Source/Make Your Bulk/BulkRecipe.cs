@@ -100,7 +100,7 @@ namespace MakeYourBulk
 
         public override bool Equals(object obj)
         {
-            if (!(obj is BulkRecipe other))
+            if (obj is not BulkRecipe other)
                 return false;
 
             return GetHashCode() == other.GetHashCode();

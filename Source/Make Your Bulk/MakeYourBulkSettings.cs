@@ -11,17 +11,17 @@ namespace MakeYourBulk
 {
     public class MakeYourBulkSettings : ModSettings
     {
-        private List<BulkRecipe> m_BulkRecipes = new List<BulkRecipe>();
+        private List<BulkRecipe> m_BulkRecipes = [];
         public List<BulkRecipe> AllBulkRecipe => m_BulkRecipes;
 
         private BulkRecipe m_ToRemoveRecipe = null;
 
-        private List<ExposableBackupList> m_BackupLists = new List<ExposableBackupList>();
+        private List<ExposableBackupList> m_BackupLists = [];
 
         private IEnumerable<BulkRecipe> m_CachedShowableRecipes = null;
         private int m_LastDefsCount = 0;
 
-        private readonly Searchbox m_Searchbox = new Searchbox();
+        private readonly Searchbox m_Searchbox = new();
 
         private bool m_VerboseLogging = MYB_Data.Settings_DefaultVerboseLogging;
         public bool VerboseLogging => m_VerboseLogging;
@@ -61,45 +61,61 @@ namespace MakeYourBulk
 
         public void DoWindowContents(Rect canva)
         {
-            Rect top1Part = canva.TopPart(0.125f).BottomPart(0.9f);
-            Rect top2Part = canva.TopPart(0.3f).BottomPart(0.6f);
-            Rect bottomPart = canva.BottomPart(0.69f); // nice
+            try
+            {
+                Rect top1Part = canva.TopPart(0.125f).BottomPart(0.9f);
+                Rect top2Part = canva.TopPart(0.3f).BottomPart(0.6f);
+                Rect bottomPart = canva.BottomPart(0.69f); // nice
 
-            Rect checkboxRect = top1Part.CenteredOnXIn(top1Part.ContractedBy(MYB_Data.GapX));
-            Rect propertiesRect = top1Part.BottomPart(0.375f);
-            Rect buttonRect = top2Part.TopPart(0.5f).BottomPart(0.6f);
-            Rect searchsizeRect = top2Part.BottomPart(0.4f).TopPart(0.75f);
+                Rect checkboxRect = top1Part.CenteredOnXIn(top1Part.ContractedBy(MYB_Data.GapX));
+                Rect propertiesRect = top1Part.BottomPart(0.375f);
+                Rect buttonRect = top2Part.TopPart(0.5f).BottomPart(0.6f);
+                Rect searchsizeRect = top2Part.BottomPart(0.4f).TopPart(0.75f);
 
-            Rect recipeRect = bottomPart.TopPart(0.85f);
-            Rect attentionRect = bottomPart.BottomPart(0.1f);
+                Rect recipeRect = bottomPart.TopPart(0.85f);
+                Rect attentionRect = bottomPart.BottomPart(0.1f);
 
-            ShowCheckboxes(checkboxRect);
-            ShowButtons(buttonRect);
-            ShowProperties(propertiesRect);
-            ShowSearchboxAndSize(searchsizeRect);
+                ShowCheckboxes(checkboxRect);
+                ShowButtons(buttonRect);
+                ShowProperties(propertiesRect);
+                ShowSearchboxAndSize(searchsizeRect);
 
-            Widgets.DrawLineHorizontal(0f, top2Part.yMax, canva.width, Widgets.SeparatorLabelColor);
+                Widgets.DrawLineHorizontal(0f, top2Part.yMax, canva.width, Widgets.SeparatorLabelColor);
 
-            ShowRecipeList(recipeRect);
-            ShowAttentionLabel(attentionRect);
+                ShowRecipeList(recipeRect);
+                ShowAttentionLabel(attentionRect);
+            }
+            catch (Exception exception)
+            {
+                MYB_Log.Exception(exception);
+            }
         }
 
         private void ShowCheckboxes(Rect checkboxRect)
         {
-            Listing_Standard listing = new Listing_Standard
+            Listing_Standard listing = new()
             {
                 ColumnWidth = checkboxRect.width / 3.1215f,
             };
 
-            listing.Begin(checkboxRect);
+            try
+            {
+                listing.Begin(checkboxRect);
 
-            listing.CheckboxLabeled(MYB_Data.VerboseLogging_Label, ref m_VerboseLogging, MYB_Data.VerboseLogging_Tooltip);
-            listing.NewColumn();
-            listing.CheckboxLabeled(MYB_Data.AddBulkUnfinishedThing_Label, ref m_AddUnfinishedThing, MYB_Data.AddBulkUnfinishedThing_Tooltip);
-            listing.NewColumn();
-            listing.CheckboxLabeled(MYB_Data.SameQuality_Label, ref m_SameQuality, MYB_Data.SameQuality_Tooltip);
-
-            listing.End();
+                listing.CheckboxLabeled(MYB_Data.VerboseLogging_Label, ref m_VerboseLogging, MYB_Data.VerboseLogging_Tooltip);
+                listing.NewColumn();
+                listing.CheckboxLabeled(MYB_Data.AddBulkUnfinishedThing_Label, ref m_AddUnfinishedThing, MYB_Data.AddBulkUnfinishedThing_Tooltip);
+                listing.NewColumn();
+                listing.CheckboxLabeled(MYB_Data.SameQuality_Label, ref m_SameQuality, MYB_Data.SameQuality_Tooltip);
+            }
+            catch (Exception exception)
+            {
+                MYB_Log.Exception(exception);
+            }
+            finally
+            {
+                listing.End();
+            }
         }
 
         private void ShowButtons(Rect buttonRect)
@@ -129,9 +145,9 @@ namespace MakeYourBulk
 
         private void SaveLoadButtonPressed()
         {
-            List<FloatMenuOption> options = new List<FloatMenuOption>
-            {
-                new FloatMenuOption(MYB_Data.Save_Option, delegate
+            List<FloatMenuOption> options =
+            [
+                new(MYB_Data.Save_Option, delegate
                 {
                     if (m_BulkRecipes.NullOrEmpty())
                     {
@@ -141,7 +157,7 @@ namespace MakeYourBulk
 
                     Find.WindowStack.Add(new Dialog_SaveList(m_BackupLists, m_BulkRecipes));
                 }),
-                new FloatMenuOption(MYB_Data.Load_Option, delegate
+                new(MYB_Data.Load_Option, delegate
                 {
                     if (m_BackupLists.NullOrEmpty())
                     {
@@ -151,10 +167,9 @@ namespace MakeYourBulk
 
                     Find.WindowStack.Add(new Dialog_LoadList(m_BackupLists, m_BulkRecipes));
                 })
-            };
+            ];
 
-            FloatMenu menu = new FloatMenu(options);
-            Find.WindowStack.Add(menu);
+            Find.WindowStack.Add(new FloatMenu(options));
         }
 
         private void ResetButtonPressed()
@@ -191,7 +206,7 @@ namespace MakeYourBulk
             Widgets.TextFieldNumericLabeled(productRect, $"{MYB_Data.RecipeProducts_Label}   ",
                 ref m_DefaultProduct, ref m_DefaultProductBuffer, 1, 1E+05f);
 
-            FloatRange range = new FloatRange(0.1f, 2f);
+            FloatRange range = new(0.1f, 2f);
             float roundTo = 0.05f;
 
             string workAmountLabel = $"{MYB_Data.RecipeWorkAmount_Label} {m_DefaultWorkAmount.ToStringPercent()}";
@@ -219,53 +234,62 @@ namespace MakeYourBulk
             if (showableRecipes.EnumerableNullOrEmpty())
                 m_ScrollViewHeight = 0f;
 
-            Rect outRect = new Rect(Vector2.zero, recipeRect.size);
-            Rect viewRect = new Rect(Vector2.zero, new Vector2(recipeRect.width - MYB_Data.GapX, m_ScrollViewHeight));
+            Rect outRect = new(Vector2.zero, recipeRect.size);
+            Rect viewRect = new(Vector2.zero, new Vector2(recipeRect.width - MYB_Data.GapX, m_ScrollViewHeight));
 
-            GUI.BeginGroup(recipeRect);
-            Widgets.BeginScrollView(outRect, ref m_ScrollPosition, viewRect, true);
-
-            float entryHeight = 80f + (m_HeightLevel - 1) * 5f;
-            int startRecipe = (int)Math.Max(Math.Floor(m_ScrollPosition.y / entryHeight) - 1, 0);
-            int endRecipes = startRecipe + (int)Math.Ceiling(outRect.height / entryHeight) + 1;
-
-            float currentHeight = 0f;
-            int i = 0;
-            foreach (BulkRecipe recipe in GetShowableBulkRecipes())
+            try
             {
-                Rect entryRect = new Rect(MYB_Data.GapX, currentHeight + MYB_Data.GapY, viewRect.width - MYB_Data.GapX, entryHeight);
+                GUI.BeginGroup(recipeRect);
+                Widgets.BeginScrollView(outRect, ref m_ScrollPosition, viewRect, true);
 
-                Widgets.DrawLineHorizontal(0f, currentHeight, viewRect.width, Widgets.SeparatorLineColor);
+                float entryHeight = 80f + (m_HeightLevel - 1) * 5f;
+                int startRecipe = (int)Math.Max(Math.Floor(m_ScrollPosition.y / entryHeight) - 1, 0);
+                int endRecipes = startRecipe + (int)Math.Ceiling(outRect.height / entryHeight) + 1;
 
-                if (i >= startRecipe && i <= endRecipes)
-                    ShowRecipeEntry(entryRect, recipe, i);
+                float currentHeight = 0f;
+                int i = 0;
+                foreach (BulkRecipe recipe in GetShowableBulkRecipes())
+                {
+                    Rect entryRect = new(MYB_Data.GapX, currentHeight + MYB_Data.GapY, viewRect.width - MYB_Data.GapX, entryHeight);
 
-                currentHeight += entryHeight;
-                i++;
+                    Widgets.DrawLineHorizontal(0f, currentHeight, viewRect.width, Widgets.SeparatorLineColor);
+
+                    if (i >= startRecipe && i <= endRecipes)
+                        ShowRecipeEntry(entryRect, recipe, i);
+
+                    currentHeight += entryHeight;
+                    i++;
+                }
+                m_ScrollViewHeight = currentHeight;
             }
-            m_ScrollViewHeight = currentHeight;
-
-            Widgets.EndScrollView();
-            GUI.EndGroup();
-
-            if (m_ToRemoveRecipe != null)
+            catch (Exception exception)
             {
-                m_BulkRecipes.Remove(m_ToRemoveRecipe);
-                m_ToRemoveRecipe = null;
+                MYB_Log.Exception(exception);
+            }
+            finally
+            {
+                Widgets.EndScrollView();
+                GUI.EndGroup();
+
+                if (m_ToRemoveRecipe != null)
+                {
+                    m_BulkRecipes.Remove(m_ToRemoveRecipe);
+                    m_ToRemoveRecipe = null;
+                }
             }
         }
 
         private void ShowRecipeEntry(Rect entryRect, BulkRecipe recipe, int index)
         {
             float iconSize = entryRect.height / 2f;
-            Rect indexRect = new Rect(0f, entryRect.y, entryRect.width, entryRect.height);
-            Rect iconRect = new Rect(entryRect.x, entryRect.y, iconSize, iconSize);
-            Rect labelRect = new Rect(new Vector2(iconRect.xMax + MYB_Data.GapX, entryRect.y + MYB_Data.GapY), entryRect.LeftHalf().size);
+            Rect indexRect = new(0f, entryRect.y, entryRect.width, entryRect.height);
+            Rect iconRect = new(entryRect.x, entryRect.y, iconSize, iconSize);
+            Rect labelRect = new(new(iconRect.xMax + MYB_Data.GapX, entryRect.y + MYB_Data.GapY), entryRect.LeftHalf().size);
 
             float toolSize = entryRect.height / 3f;
-            Rect removeRect = new Rect(entryRect.xMax - toolSize, entryRect.y, toolSize, toolSize);
-            Rect copyRect = new Rect(removeRect.x - toolSize - MYB_Data.GapY, entryRect.y, toolSize, toolSize);
-            Rect renameRect = new Rect(copyRect.x - toolSize - MYB_Data.GapY, entryRect.y, toolSize, toolSize);
+            Rect removeRect = new(entryRect.xMax - toolSize, entryRect.y, toolSize, toolSize);
+            Rect copyRect = new(removeRect.x - toolSize - MYB_Data.GapY, entryRect.y, toolSize, toolSize);
+            Rect renameRect = new(copyRect.x - toolSize - MYB_Data.GapY, entryRect.y, toolSize, toolSize);
 
             Rect bottomPart = entryRect.BottomPart(0.4f).TopPart(0.6f);
             Rect productRect = MYB_Data.LeftThird(bottomPart).LeftPart(0.8f);
@@ -300,25 +324,25 @@ namespace MakeYourBulk
 
             ShowRecipeEntryProduct(productRect, ref recipe);
 
-            FloatRange range = new FloatRange(0.1f, 2f);
+            FloatRange range = new(0.1f, 2f);
             float roundTo = 0.05f;
 
             ShowRecipeEntryWorkAmount(workRect, ref recipe, range, roundTo);
             ShowRecipeEntryCost(costRect, ref recipe, range, roundTo);
         }
 
-        private void ShowRecipeEntryProduct(Rect productRect, ref BulkRecipe recipe)
+        private static void ShowRecipeEntryProduct(Rect productRect, ref BulkRecipe recipe)
         {
             Widgets.TextFieldNumericLabeled(productRect, $"{MYB_Data.RecipeProducts_Label}   ",
                 ref recipe._Product, ref recipe._ProductBuffer, 1, 1E+05f);
         }
 
-        private void ShowRecipeEntryWorkAmount(Rect workRect, ref BulkRecipe recipe, FloatRange range, float roundTo)
+        private static void ShowRecipeEntryWorkAmount(Rect workRect, ref BulkRecipe recipe, FloatRange range, float roundTo)
         {
             string workAmountLabel = $"{MYB_Data.RecipeWorkAmount_Label} {recipe._WorkAmount.ToStringPercent()}";
             Widgets.HorizontalSlider(workRect, ref recipe._WorkAmount, range, workAmountLabel, roundTo);
 
-            Rect tooltipRect = new Rect(workRect.ExpandedBy(15f).position, new Vector2(workRect.width, workRect.height * 2f));
+            Rect tooltipRect = new(workRect.ExpandedBy(15f).position, new Vector2(workRect.width, workRect.height * 2f));
             if (Mouse.IsOver(tooltipRect) && BulkRecipeGenerator.LoadedBulkRecipeDefs.TryGetValue(recipe.DefName, out RecipeDef recipeDef))
             {
                 BulkRecipeGenerator.SetBulkWorkAmount(recipeDef, recipe.BaseRecipeDef, recipe.TotalWorkAmountFactor);
@@ -327,12 +351,12 @@ namespace MakeYourBulk
             }
         }
 
-        private void ShowRecipeEntryCost(Rect costRect, ref BulkRecipe recipe, FloatRange range, float roundTo)
+        private static void ShowRecipeEntryCost(Rect costRect, ref BulkRecipe recipe, FloatRange range, float roundTo)
         {
             string costLabel = $"{MYB_Data.RecipeCost_Label} {recipe._Cost.ToStringPercent()}";
             Widgets.HorizontalSlider(costRect, ref recipe._Cost, range, costLabel, roundTo);
 
-            Rect tooltipRect = new Rect(costRect.ExpandedBy(15f).position, new Vector2(costRect.width, costRect.height * 2f));
+            Rect tooltipRect = new(costRect.ExpandedBy(15f).position, new Vector2(costRect.width, costRect.height * 2f));
             if (Mouse.IsOver(tooltipRect) && BulkRecipeGenerator.LoadedBulkRecipeDefs.TryGetValue(recipe.DefName, out RecipeDef recipeDef))
             {
                 BulkRecipeGenerator.SetBulkIngredients(recipeDef, recipe.BaseRecipeDef, recipe.TotalCostFactor);
@@ -345,7 +369,7 @@ namespace MakeYourBulk
             }
         }
 
-        private void ShowAttentionLabel(Rect attentionRect)
+        private static void ShowAttentionLabel(Rect attentionRect)
         {
             Rect labelRect = attentionRect.BottomPart(0.9f);
 
